@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>LifeHack — iOS Prototype Overview</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script
+            src="https://kit.fontawesome.com/a2e0bf0f6a.js"
+            crossorigin="anonymous"
+        ></script>
+        <style>
+            :root {
+                --primary: #6b8ee8;
+                --ink: #4b5c9a;
+            }
+            body {
+                font-family: "SF Pro Display", "SF Pro Text", -apple-system,
+                    BlinkMacSystemFont, "Helvetica Neue", Arial, ui-sans-serif,
+                    system-ui;
+                background: radial-gradient(
+                    1200px 600px at 50% -10%,
+                    #e9f0ff 0%,
+                    #fffaf0 60%,
+                    #ffffff 90%
+                );
+            }
+            .phone {
+                width: 330px;
+                height: 700px;
+                border-radius: 36px;
+                position: relative;
+                overflow: hidden;
+                border: 8px solid #d6dbe8;
+                background: #fff;
+                box-shadow: 0 24px 72px rgba(21, 27, 57, 0.18),
+                    inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+            }
+            .island {
+                position: absolute;
+                top: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 130px;
+                height: 32px;
+                background: #000;
+                border-radius: 22px;
+                z-index: 20;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+            }
+            .safe {
+                padding-top: 54px;
+                height: 100%;
+            }
+            .tabbar {
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                height: 70px;
+                background: rgba(255, 255, 255, 0.9);
+                backdrop-filter: blur(10px);
+                border-top: 1px solid rgba(0, 0, 0, 0.06);
+            }
+            .chip {
+                padding: 0.25rem 0.6rem;
+                border-radius: 9999px;
+                background: #eef2ff;
+                color: var(--ink);
+                font-weight: 600;
+                font-size: 0.8rem;
+            }
+            .ring-focus:focus {
+                outline: none;
+                box-shadow: 0 0 0 4px rgba(107, 142, 232, 0.25);
+            }
+            .glass {
+                backdrop-filter: blur(10px);
+                background: rgba(255, 255, 255, 0.72);
+            }
+            .caption {
+                font-size: 0.8rem;
+                color: #6b7280;
+            }
+            .kpi-shadow {
+                box-shadow: 0 16px 38px rgba(107, 142, 232, 0.18);
+            }
+        </style>
+    </head>
+    <body class="text-gray-800 antialiased selection:bg-indigo-200/40">
+        <!-- ===== Header / Nav ===== -->
+        <header class="max-w-7xl mx-auto px-6 pt-10 pb-6 text-center">
+            <h1
+                class="text-5xl font-extrabold tracking-tight text-[color:var(--ink)]"
+            >
+                LifeHack
+            </h1>
+            <p class="text-gray-500 mt-2">
+                All-in-one Lifestyle Journal · Finance × Mood × Schedule × Diary
+            </p>
+            <nav class="mt-6 flex flex-wrap justify-center gap-3 text-sm">
+                <a href="#onboarding" class="chip">Onboarding</a>
+                <a href="#home" class="chip">Home</a>
+                <a href="#add" class="chip">Add Panel</a>
+                <a href="#exp-editor" class="chip">Expense</a>
+                <a href="#mood-editor" class="chip">Mood</a>
+                <a href="#event-editor" class="chip">Event</a>
+                <a href="#note-editor" class="chip">Note</a>
+                <a href="#stats" class="chip">Stats</a>
+                <a href="#prompt" class="chip">Night Prompt</a>
+                <a href="#settings" class="chip">Settings</a>
+            </nav>
+        </header>
+
+        <!-- ===== Phones Grid ===== -->
+        <main
+            class="max-w-7xl mx-auto px-6 pb-28 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-14 place-items-center"
+        >
+            <!-- ============== Onboarding ============== -->
+            <section id="onboarding" class="w-full flex flex-col items-center">
+                <h2 class="text-lg font-semibold text-[color:var(--ink)] mb-3">
+                    Onboarding / 權限導引
+                </h2>
+                <div class="phone">
+                    <div class="island"></div>
+                    <div
+                        class="safe bg-gradient-to-b from-white via-indigo-50/60 to-white"
+                    >
+                        <div class="px-6 pt-3">
+                            <p class="text-xs text-gray-400 text-center">
+                                1 / 3
+                            </p>
+                            <div
+                                class="mt-6 flex flex-col items-center text-center"
+                            >
+                                <div
+                                    class="w-28 h-28 rounded-3xl bg-indigo-100 kpi-shadow flex items-center justify-center text-5xl"
+                                >
+                                    🌿
+                                </div>
+                                <h3
+                                    class="mt-6 text-2xl font-bold text-[color:var(--ink)]"
+                                >
+                                    把生活記錄得更溫柔
+                                </h3>
+                                <p class="mt-2 text-gray-600">
+                                    金錢 × 心情 × 行程 × 日記，一個 App
+                                    全包且不打擾。
+                                </p>
+                            </div>
+                            <div class="mt-8 space-y-3">
+                                <div class="flex items-center gap-3">
+                                    <i
+                                        class="fa-solid fa-bolt text-[color:var(--primary)]"
+                                    ></i
+                                    ><span
+                                        >一鍵新增（支出/心情/行程/日記）</span
+                                    >
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <i
+                                        class="fa-regular fa-face-smile text-amber-500"
+                                    ></i
+                                    ><span>夜間一行日記提示</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <i
+                                        class="fa-solid fa-chart-line text-emerald-500"
+                                    ></i
+                                    ><span>每週 AI 洞察報告</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="absolute left-0 right-0 bottom-24 px-6">
+                            <button
+                                class="w-full py-3 rounded-2xl bg-[color:var(--primary)] text-white font-semibold shadow-lg hover:bg-[#5b7ddc] ring-focus"
+                            >
+                                繼續
+                            </button>
+                            <div class="mt-3 text-center text-sm text-gray-500">
+                                或 <span class="underline">稍後再說</span>
+                            </div>
+                        </div>
+                        <div
+                            class="tabbar grid grid-cols-5 text-xs text-gray-500 place-items-center"
+                        >
+                            <div><i class="fa-solid fa-house"></i></div>
+                            <div><i class="fa-solid fa-chart-simple"></i></div>
+                            <div
+                                class="bg-[color:var(--primary)] text-white w-11 h-11 -mt-6 rounded-full flex items-center justify-center text-lg shadow-lg"
+                            >
+                                +
+                            </div>
+                            <div>
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </div>
+                            <div><i class="fa-solid fa-gear"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <p class="caption mt-2">
+                    首次啟用：品牌介紹、允許通知/行事曆等權限導引
+                </p>
+            </section>
+
+            <!-- ============== Home ============== -->
+            <section id="home" class="w-full flex flex-col items-center">
+                <h2 class="text-lg font-semibold text-[color:var(--ink)] mb-3">
+                    Home / 今日時間軸
+                </h2>
+                <div class="phone">
+                    <div class="island"></div>
+                    <div class="safe bg-[#FFFDF7]">
+                        <header class="px-6 pt-2">
+                            <div class="flex justify-between items-end">
+                                <div>
+                                    <div class="text-sm text-gray-500">
+                                        週三 · 10/23
+                                    </div>
+                                    <h1 class="text-3xl font-bold">
+                                        今日時間軸
+                                    </h1>
+                                </div>
+                                <i
+                                    class="fa-solid fa-gear text-gray-400 text-xl"
+                                ></i>
+                            </div>
+                            <div class="mt-3 flex gap-2 overflow-x-auto">
+                                <span class="chip">全部</span>
+                                <span class="chip bg-indigo-100">支出</span>
+                                <span class="chip bg-amber-100 text-amber-700"
+                                    >心情</span
+                                >
+                                <span
+                                    class="chip bg-emerald-100 text-emerald-700"
+                                    >行程</span
+                                >
+                                <span class="chip bg-gray-100 text-gray-700"
+                                    >日記</span
+                                >
+                            </div>
+                            <div
+                                class="mt-3 glass rounded-xl px-3 py-2 text-sm text-gray-700"
+                            >
+                                今天課多一點，22:00 別忘了放鬆 10 分鐘 🌿
+                            </div>
+                        </header>
+
+                        <main class="px-6 mt-4 space-y-4">
+                            <!-- Expense card -->
+                            <article
+                                class="bg-white rounded-2xl p-4 shadow-sm flex justify-between items-center"
+                            >
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center"
+                                    >
+                                        <i class="fa-solid fa-sack-dollar"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold">
+                                            午餐支出
+                                        </div>
+                                        <div class="text-gray-500 text-sm">
+                                            NT$120 · 12:30
+                                        </div>
+                                    </div>
+                                </div>
+                                <span
+                                    class="text-indigo-600 text-sm font-semibold"
+                                    >支出</span
+                                >
+                            </article>
+
+                            <!-- Mood card -->
+                            <article
+                                class="bg-white rounded-2xl p-4 shadow-sm flex justify-between items-center"
+                            >
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center"
+                                    >
+                                        <i class="fa-regular fa-face-smile"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold">
+                                            午後心情平靜
+                                        </div>
+                                        <div class="text-gray-500 text-sm">
+                                            15:00
+                                        </div>
+                                    </div>
+                                </div>
+                                <span
+                                    class="text-amber-600 text-sm font-semibold"
+                                    >心情</span
+                                >
+                            </article>
+
+                            <!-- Event card -->
+                            <article
+                                class="bg-white rounded-2xl p-4 shadow-sm flex justify-between items-center"
+                            >
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center"
+                                    >
+                                        <i class="fa-solid fa-calendar-day"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold">
+                                            系會會議
+                                        </div>
+                                        <div class="text-gray-500 text-sm">
+                                            19:00
+                                        </div>
+                                    </div>
+                                </div>
+                                <span
+                                    class="text-emerald-600 text-sm font-semibold"
+                                    >行程</span
+                                >
+                            </article>
+                        </main>
+
+                        <button
+                            class="absolute right-6 bottom-20 w-16 h-16 rounded-full bg-[color:var(--primary)] text-white text-3xl shadow-lg hover:bg-[#5b7ddc]"
+                        >
+                            +
+                        </button>
+
+                        <nav
+                            class="tabbar grid grid-cols-5 text-xs text-gray-500 place-items-center"
+                        >
+                            <div class="text-[color:var(--primary)]">
+                                <i class="fa-solid fa-house"></i>
+                                <div>首頁</div>
+                            </div>
+                            <div>
+                                <i class="fa-solid fa-chart-simple"></i>
+                                <div>分析</div>
+                            </div>
+                            <div
+                                class="bg-[color:var(--primary)] text-white w-11 h-11 -mt-6 rounded-full flex items-center justify-center text-lg shadow-lg"
+                            >
+                                +
+                            </div>
+                            <div>
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <div>搜尋</div>
+                            </div>
+                            <div>
+                                <i class="fa-solid fa-gear"></i>
+                                <div>設定</div>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+                <p class="caption mt-2">
+                    時間軸卡片可左滑編輯/刪除，FAB 叫出 Add Panel
+                </p>
+            </section>
+
+            <!-- ============== Add Panel ============== -->
+            <section id="add" class="w-full flex flex-col items-center">
+                <h2 class="text-lg font-semibold text-[color:var(--ink)] mb-3">
+                    Add Panel / 快速新增
+                </h2>
+                <div class="phone">
+                    <div class="island"></div>
+                    <div class="safe bg-white">
+                        <header class="px-6 pt-3">
+                            <h1 class="text-2xl font-bold">新增紀錄</h1>
+                            <p class="text-gray-500 text-sm mt-1">
+                                選一個類型開始吧
+                            </p>
+                        </header>
+                        <main class="px-6 mt-5">
+                            <div
+                                class="grid grid-cols-2 gap-14 place-items-center"
+                            >
+                                <button
+                                    class="w-28 h-28 rounded-2xl bg-indigo-50 text-indigo-600 font-semibold shadow-sm hover:shadow kpi-shadow flex items-center justify-center flex-col"
+                                >
+                                    <i
+                                        class="fa-solid fa-sack-dollar text-2xl mb-1"
+                                    ></i
+                                    >支出
+                                </button>
+                                <button
+                                    class="w-28 h-28 rounded-2xl bg-amber-50 text-amber-600 font-semibold shadow-sm hover:shadow flex items-center justify-center flex-col"
+                                >
+                                    <i
+                                        class="fa-regular fa-face-smile text-2xl mb-1"
+                                    ></i
+                                    >心情
+                                </button>
+                                <button
+                                    class="w-28 h-28 rounded-2xl bg-emerald-50 text-emerald-600 font-semibold shadow-sm hover:shadow flex items-center justify-center flex-col"
+                                >
+                                    <i
+                                        class="fa-solid fa-calendar-day text-2xl mb-1"
+                                    ></i
+                                    >行程
+                                </button>
+                                <button
+                                    class="w-28 h-28 rounded-2xl bg-gray-50 text-gray-700 font-semibold shadow-sm hover:shadow flex items-center justify-center flex-col"
+                                >
+                                    <i class="fa-solid fa-pen text-2xl mb-1"></i
+                                    >日記
+                                </button>
+                            </div>
+                            <div class="mt-8">
+                                <h4 class="text-sm text-gray-500 mb-2">
+                                    最近常用
+                                </h4>
+                                <div class="flex gap-2 overflow-x-auto">
+                                    <span class="chip">咖啡 NT$55</span>
+                                    <span class="chip">搭車 NT$20</span>
+                                    <span
+                                        class="chip bg-emerald-100 text-emerald-700"
+                                        >跑步 30 分</span
+                                    >
+                                    <span class="chip bg-gray-100 text-gray-700"
+                                        >三行日記</span
+                                    >
+                                </div>
+                            </div>
+                        </main>
+                        <div class="tabbar"></div>
+                    </div>
+                </div>
+                <p class="caption mt-2">
+                    四宮格＋常用捷徑；可延伸為 Bottom Sheet 互動
+                </p>
+            </section>
+
+            <!-- ============== Expense Editor ============== -->
+            <section id="exp-editor" class="w-full flex flex-col items-center">
+                <h2 class="text-lg font-semibold text-[color:var(--ink)] mb-3">
+                    Editor / 支出
+                </h2>
+                <div class="phone">
+                    <div class="island"></div>
+                    <div class="safe bg-white">
+                        <header
+                            class="px-6 pt-3 flex justify-between items-center"
+                        >
+                            <button class="text-[color:var(--primary)]">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <h1 class="text-lg font-semibold">新增支出</h1>
+                            <button
+                                class="text-[color:var(--primary)] font-semibold"
+                            >
+                                儲存
+                            </button>
+                        </header>
+                        <main class="px-6 mt-4 space-y-4">
+                            <div
+                                class="text-5xl font-extrabold tracking-tight text-[color:var(--ink)]"
+                            >
+                                NT$
+                                <input
+                                    class="w-40 outline-none border-b border-indigo-200 focus:border-indigo-400 text-5xl pl-2"
+                                    value="120"
+                                />
+                            </div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <span class="chip">餐飲</span
+                                ><span class="chip">交通</span
+                                ><span class="chip">娛樂</span>
+                                <span class="chip bg-indigo-100">學習</span
+                                ><span class="chip">日用</span
+                                ><span class="chip">其他</span>
+                            </div>
+                            <label class="block">
+                                <span class="text-sm text-gray-500">標題</span>
+                                <input
+                                    class="mt-1 w-full border rounded-xl px-3 py-2 ring-focus"
+                                    placeholder="寫點什麼…（如：午餐）"
+                                    value="午餐支出"
+                                />
+                            </label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <label class="block"
+                                    ><span class="text-sm text-gray-500"
+                                        >日期</span
+                                    ><input
+                                        type="date"
+                                        class="mt-1 w-full border rounded-xl px-3 py-2 ring-focus"
+                                /></label>
+                                <label class="block"
+                                    ><span class="text-sm text-gray-500"
+                                        >時間</span
+                                    ><input
+                                        type="time"
+                                        class="mt-1 w-full border rounded-xl px-3 py-2 ring-focus"
+                                        value="12:30"
+                                /></label>
+                            </div>
+                            <button
+                                class="w-full py-3 rounded-2xl bg-indigo-50 text-indigo-700 font-semibold"
+                            >
+                                <i class="fa-regular fa-image mr-1"></i
+                                >加入收據照片
+                            </button>
+                        </main>
+                    </div>
+                </div>
+                <p class="caption mt-2">大數字輸入＋類別 chip＋可加收據</p>
+            </section>
+
+            <!-- ============== Mood Editor ============== -->
+            <section id="mood-editor" class="w-full flex flex-col items-center">
+                <h2 class="text-lg font-semibold text-[color:var(--ink)] mb-3">
+                    Editor / 心情
+                </h2>
+                <div class="phone">
+                    <div class="island"></div>
+                    <div class="safe bg-white">
+                        <header
+                            class="px-6 pt-3 flex justify-between items-center"
+                        >
+                            <button class="text-[color:var(--primary)]">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <h1 class="text-lg font-semibold">記錄心情</h1>
+                            <button
+                                class="text-[color:var(--primary)] font-semibold"
+                            >
+                                儲存
+                            </button>
+                        </header>
+                        <main class="px-6 mt-6 space-y-5">
+                            <div>
+                                <div class="text-sm text-gray-500 mb-2">
+                                    今天的感覺
+                                </div>
+                                <div class="flex justify-between">
+                                    <button
+                                        class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-500 text-xl"
+                                    >
+                                        😟
+                                    </button>
+                                    <button
+                                        class="w-12 h-12 rounded-2xl bg-orange-50 text-orange-500 text-xl"
+                                    >
+                                        😕
+                                    </button>
+                                    <button
+                                        class="w-12 h-12 rounded-2xl bg-gray-50 text-gray-700 text-xl"
+                                    >
+                                        😐
+                                    </button>
+                                    <button
+                                        class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-500 text-xl"
+                                    >
+                                        🙂
+                                    </button>
+                                    <button
+                                        class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-500 text-xl"
+                                    >
+                                        😄
+                                    </button>
+                                </div>
+                            </div>
+                            <label class="block">
+                                <span class="text-sm text-gray-500"
+                                    >一句話</span
+                                >
+                                <input
+                                    class="mt-1 w-full border rounded-xl px-3 py-2 ring-focus"
+                                    placeholder="例如：午後陽光很好，心情穩定。"
+                                />
+                            </label>
+                            <button
+                                class="w-full py-3 rounded-2xl bg-sky-50 text-sky-700 font-semibold"
+                            >
+                                <i class="fa-solid fa-wind mr-1"></i> 呼吸 1
+                                分鐘
+                            </button>
+                        </main>
+                    </div>
+                </div>
+                <p class="caption mt-2">5 段心情＋一句話＋可選呼吸輔助</p>
+            </section>
+
+            <!-- ============== Event Editor ============== -->
+            <section
+                id="event-editor"
+                class="w-full flex flex-col items-center"
+            >
+                <h2 class="text-lg font-semibold text-[color:var(--ink)] mb-3">
+                    Editor / 行程
+                </h2>
+                <div class="phone">
+                    <div class="island"></div>
+                    <div class="safe bg-white">
+                        <header
+                            class="px-6 pt-3 flex justify-between items-center"
+                        >
+                            <button class="text-[color:var(--primary)]">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <h1 class="text-lg font-semibold">新增行程</h1>
+                            <button
+                                class="text-[color:var(--primary)] font-semibold"
+                            >
+                                儲存
+                            </button>
+                        </header>
+                        <main class="px-6 mt-4 space-y-4">
+                            <label class="block"
+                                ><span class="text-sm text-gray-500">標題</span
+                                ><input
+                                    class="mt-1 w-full border rounded-xl px-3 py-2 ring-focus"
+                                    placeholder="例如：系會會議"
+                            /></label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <label class="block"
+                                    ><span class="text-sm text-gray-500"
+                                        >開始</span
+                                    ><input
+                                        type="datetime-local"
+                                        class="mt-1 w-full border rounded-xl px-3 py-2 ring-focus"
+                                /></label>
+                                <label class="block"
+                                    ><span class="text-sm text-gray-500"
+                                        >結束</span
+                                    ><input
+                                        type="datetime-local"
+                                        class="mt-1 w-full border rounded-xl px-3 py-2 ring-focus"
+                                /></label>
+                            </div>
+                            <div
+                                class="flex items-center justify-between border rounded-xl px-4 py-3"
+                            >
+                                <div class="text-sm">
+                                    <div class="font-medium">加入行事曆</div>
+                                    <div class="text-gray-500">
+                                        寫入 Apple Calendar
+                                    </div>
+                                </div>
+                                <label
+                                    class="inline-flex items-center cursor-pointer"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        class="sr-only peer"
+                                        checked
+                                    />
+                                    <div
+                                        class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-emerald-500 relative after:content-[''] after:w-5 after:h-5 after:bg-white after:rounded-full after:absolute after:top-0.5 after:left-0.5 peer-checked:after:translate-x-5 after:transition"
+                                    ></div>
+                                </label>
+                            </div>
+                            <label class="block"
+                                ><span class="text-sm text-gray-500">提醒</span>
+                                <select
+                                    class="mt-1 w-full border rounded-xl px-3 py-2 ring-focus"
+                                >
+                                    <option>不提醒</option>
+                                    <option>提前 5 分鐘</option>
+                                    <option>提前 15 分鐘</option>
+                                </select>
+                            </label>
+                        </main>
+                    </div>
+                </div>
+                <p class="caption mt-2">與 Apple Calendar 整合的基本欄位</p>
+            </section>
+
+            <!-- ============== Note Editor ============== -->
+            <section id="note-editor" class="w-full flex flex-col items-center">
+                <h2 class="text-lg font-semibold text-[color:var(--ink)] mb-3">
+                    Editor / 日記
+                </h2>
+                <div class="phone">
+                    <div class="island"></div>
+                    <div class="safe bg-white">
+                        <header
+                            class="px-6 pt-3 flex justify-between items-center"
+                        >
+                            <button class="text-[color:var(--primary)]">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <h1 class="text-lg font-semibold">寫日記</h1>
+                            <button
+                                class="text-[color:var(--primary)] font-semibold"
+                            >
+                                儲存
+                            </button>
+                        </header>
+                        <main class="px-6 mt-4 space-y-4">
+                            <input
+                                class="w-full border-0 border-b border-gray-200 focus:border-indigo-300 text-2xl font-semibold py-2 outline-none"
+                                placeholder="今天的標題…"
+                            />
+                            <textarea
+                                rows="7"
+                                class="w-full border rounded-2xl px-3 py-3 ring-focus"
+                                placeholder="寫幾句今天的發現、感謝或反思…"
+                            ></textarea>
+                            <div>
+                                <div class="text-sm text-gray-500 mb-2">
+                                    範本
+                                </div>
+                                <div class="flex gap-2 overflow-x-auto">
+                                    <span class="chip">三行回顧</span
+                                    ><span class="chip">謝謝三件事</span
+                                    ><span class="chip">TODO 反思</span>
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+                </div>
+                <p class="caption mt-2">標題＋內文＋模板 chips</p>
+            </section>
+
+            <!-- ============== Stats ============== -->
+            <section id="stats" class="w-full flex flex-col items-center">
+                <h2 class="text-lg font-semibold text-[color:var(--ink)] mb-3">
+                    Stats / 週報分析
+                </h2>
+                <div class="phone">
+                    <div class="island"></div>
+                    <div class="safe bg-[#FDFBF4]">
+                        <header
+                            class="px-6 pt-3 flex justify-between items-center"
+                        >
+                            <h1 class="text-2xl font-bold">週報分析</h1>
+                            <div
+                                class="text-sm bg-white rounded-xl px-3 py-1 shadow-sm"
+                            >
+                                週 <span class="text-gray-400">/ 月</span>
+                            </div>
+                        </header>
+                        <main class="px-6 mt-4 space-y-4 pb-20">
+                            <div class="grid grid-cols-3 gap-3">
+                                <div
+                                    class="bg-white rounded-2xl p-3 text-center shadow-sm kpi-shadow"
+                                >
+                                    <div class="text-xs text-gray-500">
+                                        本週支出
+                                    </div>
+                                    <div class="text-xl font-bold">
+                                        NT$ 1,980
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-white rounded-2xl p-3 text-center shadow-sm"
+                                >
+                                    <div class="text-xs text-gray-500">
+                                        平均心情
+                                    </div>
+                                    <div class="text-xl font-bold">3.8 / 5</div>
+                                </div>
+                                <div
+                                    class="bg-white rounded-2xl p-3 text-center shadow-sm"
+                                >
+                                    <div class="text-xs text-gray-500">
+                                        完成事件
+                                    </div>
+                                    <div class="text-xl font-bold">8</div>
+                                </div>
+                            </div>
+
+                            <!-- 支出趨勢圖（SVG） -->
+                            <div class="bg-white rounded-2xl p-4 shadow-sm">
+                                <div class="font-medium mb-2">支出趨勢</div>
+                                <svg viewBox="0 0 320 120" class="w-full h-28">
+                                    <defs>
+                                        <linearGradient
+                                            id="g1"
+                                            x1="0"
+                                            x2="0"
+                                            y1="0"
+                                            y2="1"
+                                        >
+                                            <stop
+                                                offset="0%"
+                                                stop-color="#6B8EE8"
+                                                stop-opacity="0.6"
+                                            />
+                                            <stop
+                                                offset="100%"
+                                                stop-color="#6B8EE8"
+                                                stop-opacity="0"
+                                            />
+                                        </linearGradient>
+                                    </defs>
+                                    <polyline
+                                        fill="url(#g1)"
+                                        stroke="none"
+                                        points="0,110 0,80 40,70 80,90 120,65 160,50 200,60 240,40 280,55 320,45 320,110"
+                                    />
+                                    <polyline
+                                        fill="none"
+                                        stroke="#6B8EE8"
+                                        stroke-width="3"
+                                        points="0,80 40,70 80,90 120,65 160,50 200,60 240,40 280,55 320,45"
+                                    />
+                                </svg>
+                            </div>
+
+                            <!-- 情緒變化圖（SVG） -->
+                            <div class="bg-white rounded-2xl p-4 shadow-sm">
+                                <div class="font-medium mb-2">情緒變化</div>
+                                <svg viewBox="0 0 320 120" class="w-full h-28">
+                                    <polyline
+                                        fill="none"
+                                        stroke="#f59e0b"
+                                        stroke-width="3"
+                                        points="0,70 40,65 80,72 120,60 160,64 200,56 240,50 280,58 320,54"
+                                    />
+                                </svg>
+                            </div>
+
+                            <div class="glass rounded-2xl px-4 py-3 text-sm">
+                                🌿
+                                洞察：週三行程最多、支出也偏高；建議將健身移到週四，平均化壓力。
+                            </div>
+                        </main>
+                        <div class="tabbar"></div>
+                    </div>
+                </div>
+                <p class="caption mt-2">KPI + 折線圖（純 SVG）+ AI 文本洞察</p>
+            </section>
+
+            <!-- ============== Night Prompt ============== -->
+            <section id="prompt" class="w-full flex flex-col items-center">
+                <h2 class="text-lg font-semibold text-[color:var(--ink)] mb-3">
+                    Night Prompt / 晚安一行日記
+                </h2>
+                <div class="phone">
+                    <div class="island"></div>
+                    <div
+                        class="safe bg-gradient-to-b from-[#0E1726] to-[#1b2a49] text-white"
+                    >
+                        <div class="px-6 pt-10 text-center">
+                            <div class="text-6xl">🌙</div>
+                            <h1 class="text-2xl font-bold mt-3">
+                                今天過得如何？
+                            </h1>
+                            <p class="text-white/70 mt-1">
+                                花 10 秒寫下一句話就好
+                            </p>
+                        </div>
+                        <div class="px-6 mt-6">
+                            <div class="flex justify-center gap-4">
+                                <button
+                                    class="w-12 h-12 rounded-2xl bg-rose-200/10 border border-white/20"
+                                >
+                                    😟
+                                </button>
+                                <button
+                                    class="w-12 h-12 rounded-2xl bg-amber-200/10 border border-white/20"
+                                >
+                                    🙂
+                                </button>
+                                <button
+                                    class="w-12 h-12 rounded-2xl bg-emerald-200/10 border border-white/20"
+                                >
+                                    😄
+                                </button>
+                            </div>
+                            <textarea
+                                rows="4"
+                                class="mt-5 w-full bg-white/10 text-white rounded-2xl px-3 py-3 placeholder-white/50 outline-none ring-1 ring-white/20 focus:ring-white/40"
+                                placeholder="寫下一句今天的記憶點…"
+                            ></textarea>
+                            <div class="mt-4 grid grid-cols-2 gap-3">
+                                <button
+                                    class="py-3 rounded-2xl bg-white/15 font-semibold hover:bg-white/25"
+                                >
+                                    稍後提醒
+                                </button>
+                                <button
+                                    class="py-3 rounded-2xl bg-white text-[#0E1726] font-semibold"
+                                >
+                                    儲存
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="caption mt-2">22:00 喚起；三個情緒鍵＋一句話輸入</p>
+            </section>
+
+            <!-- ============== Settings ============== -->
+            <section id="settings" class="w-full flex flex-col items-center">
+                <h2 class="text-lg font-semibold text-[color:var(--ink)] mb-3">
+                    Settings / 設定
+                </h2>
+                <div class="phone">
+                    <div class="island"></div>
+                    <div class="safe bg-white">
+                        <header class="px-6 pt-3">
+                            <h1 class="text-2xl font-bold">設定</h1>
+                        </header>
+                        <main class="px-6 mt-4 space-y-5 pb-20">
+                            <!-- Group 1 -->
+                            <div class="bg-gray-50 rounded-2xl p-3">
+                                <div
+                                    class="px-2 py-2 flex justify-between items-center"
+                                >
+                                    <div>
+                                        <div class="font-medium">提醒時間</div>
+                                        <div class="text-sm text-gray-500">
+                                            晚安提示
+                                        </div>
+                                    </div>
+                                    <input
+                                        type="time"
+                                        value="22:00"
+                                        class="border rounded-xl px-3 py-1 ring-focus"
+                                    />
+                                </div>
+                                <div
+                                    class="px-2 py-2 flex justify-between items-center"
+                                >
+                                    <div>
+                                        <div class="font-medium">主題</div>
+                                        <div class="text-sm text-gray-500">
+                                            淺色 / 深色 / 自動
+                                        </div>
+                                    </div>
+                                    <select
+                                        class="border rounded-xl px-3 py-1 ring-focus"
+                                    >
+                                        <option>自動</option>
+                                        <option>淺色</option>
+                                        <option>深色</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- Group 2 -->
+                            <div class="bg-gray-50 rounded-2xl p-3">
+                                <div
+                                    class="px-2 py-2 flex justify-between items-center"
+                                >
+                                    <div>
+                                        <div class="font-medium">
+                                            行事曆整合
+                                        </div>
+                                        <div class="text-sm text-gray-500">
+                                            讀寫 Apple Calendar
+                                        </div>
+                                    </div>
+                                    <label
+                                        class="inline-flex items-center cursor-pointer"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            class="sr-only peer"
+                                            checked
+                                        />
+                                        <div
+                                            class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-emerald-500 relative after:content-[''] after:w-5 after:h-5 after:bg-white after:rounded-full after:absolute after:top-0.5 after:left-0.5 peer-checked:after:translate-x-5 after:transition"
+                                        ></div>
+                                    </label>
+                                </div>
+                                <div
+                                    class="px-2 py-2 flex justify-between items-center"
+                                >
+                                    <div>
+                                        <div class="font-medium">
+                                            iCloud 同步
+                                        </div>
+                                        <div class="text-sm text-gray-500">
+                                            跨裝置備份
+                                        </div>
+                                    </div>
+                                    <label
+                                        class="inline-flex items-center cursor-pointer"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            class="sr-only peer"
+                                            checked
+                                        />
+                                        <div
+                                            class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-indigo-500 relative after:content-[''] after:w-5 after:h-5 after:bg-white after:rounded-full after:absolute after:top-0.5 after:left-0.5 peer-checked:after:translate-x-5 after:transition"
+                                        ></div>
+                                    </label>
+                                </div>
+                            </div>
+                            <!-- Group 3 -->
+                            <div class="bg-gray-50 rounded-2xl p-3">
+                                <div
+                                    class="px-2 py-2 flex justify-between items-center"
+                                >
+                                    <div>
+                                        <div class="font-medium">隱私</div>
+                                        <div class="text-sm text-gray-500">
+                                            以 Face ID 鎖定 App
+                                        </div>
+                                    </div>
+                                    <label
+                                        class="inline-flex items-center cursor-pointer"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            class="sr-only peer"
+                                        />
+                                        <div
+                                            class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-purple-500 relative after:content-[''] after:w-5 after:h-5 after:bg-white after:rounded-full after:absolute after:top-0.5 after:left-0.5 peer-checked:after:translate-x-5 after:transition"
+                                        ></div>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="text-sm text-gray-400 px-2">
+                                版本 1.0.0 · 回饋意見
+                            </div>
+                        </main>
+                    </div>
+                </div>
+                <p class="caption mt-2">群組化設定，對齊 iOS 分組表單樣式</p>
+            </section>
+        </main>
+
+        <footer class="text-center text-gray-400 text-sm mb-10">
+            © 2025 LifeHack — Prototype for iOS · Apple HIG-style Overview
+        </footer>
+    </body>
+</html>
