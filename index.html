@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <title>LifeHack — iOS Prototype Overview</title>
+        <title>LifeHack — iOS Prototype (Revised Layout)</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <script
             src="https://kit.fontawesome.com/a2e0bf0f6a.js"
@@ -13,17 +13,23 @@
             :root {
                 --primary: #6b8ee8;
                 --ink: #4b5c9a;
+                --amber: #f59e0b;
+                --emerald: #10b981;
+                /* Site-only palette (outside the iPhone mock) */
+                --site-bg: #fff5c4;
+                --site-ink-strong: #4a3f2b;
+                --site-ink: #5a4a28;
+                --site-chip-bg: #ffefb3;
+                --site-chip-text: #6b4e00;
+                --site-chip-hover: #ffe48a;
             }
+            /* ✅ 保持外部背景不變 */
             body {
                 font-family: "SF Pro Display", "SF Pro Text", -apple-system,
                     BlinkMacSystemFont, "Helvetica Neue", Arial, ui-sans-serif,
                     system-ui;
-                background: radial-gradient(
-                    1200px 600px at 50% -10%,
-                    #e9f0ff 0%,
-                    #fffaf0 60%,
-                    #ffffff 90%
-                );
+                background: var(--site-bg);
+                transition: background-color 0.25s ease;
             }
             .phone {
                 width: 330px;
@@ -63,7 +69,7 @@
                 border-top: 1px solid rgba(0, 0, 0, 0.06);
             }
             .chip {
-                padding: 0.25rem 0.6rem;
+                padding: 0.28rem 0.62rem;
                 border-radius: 9999px;
                 background: #eef2ff;
                 color: var(--ink);
@@ -85,10 +91,85 @@
             .kpi-shadow {
                 box-shadow: 0 16px 38px rgba(107, 142, 232, 0.18);
             }
+            .seg {
+                display: inline-flex;
+                background: #f4f6ff;
+                border-radius: 12px;
+                padding: 2px;
+            }
+            .seg button {
+                padding: 0.35rem 0.75rem;
+                border-radius: 10px;
+                font-weight: 600;
+                font-size: 0.85rem;
+                color: #6b7280;
+            }
+            .seg button.active {
+                background: #fff;
+                color: #334155;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            }
+
+            /* === Site chrome (outside iPhone) === */
+            header h1,
+            main > section > h2 {
+                color: var(--site-ink-strong) !important;
+            }
+            header p {
+                color: #7a6a42;
+            }
+            header nav .chip {
+                background: var(--site-chip-bg);
+                color: var(--site-chip-text);
+                border: 1px solid rgba(107, 78, 0, 0.15);
+                box-shadow: 0 6px 14px rgba(107, 78, 0, 0.12);
+            }
+            header nav .chip:hover {
+                background: var(--site-chip-hover);
+            }
+            /* Section captions under each phone */
+            .caption {
+                color: #7b6a3d;
+            }
+            footer {
+                color: #7b6a3d;
+            }
+            /* ==== Heatmap utilities (mood) ==== */
+            .heat {
+                width: 14px;
+                height: 14px;
+                border-radius: 3px;
+            }
+            .heat-0 {
+                background: #f3f4f6;
+            } /* 無資料 */
+            .heat-1 {
+                background: #fde68a;
+            } /* 低 */
+            .heat-2 {
+                background: #fbbf24;
+            } /* 中低 */
+            .heat-3 {
+                background: #86efac;
+            } /* 中高 */
+            .heat-4 {
+                background: #10b981;
+            } /* 高 */
+            .ring-arc {
+                background: conic-gradient(var(--primary) 40%, #e5e7eb 0 100%);
+            }
+            .ring-arc2 {
+                background: conic-gradient(#f59e0b 66%, #e5e7eb 0 100%);
+            }
+            .ring-arc3 {
+                background: conic-gradient(#10b981 80%, #e5e7eb 0 100%);
+            }
+            .kbd {
+                @apply text-xs px-2 py-1 rounded-lg bg-gray-50 border;
+            }
         </style>
     </head>
     <body class="text-gray-800 antialiased selection:bg-indigo-200/40">
-        <!-- ===== Header / Nav ===== -->
         <header class="max-w-7xl mx-auto px-6 pt-10 pb-6 text-center">
             <h1
                 class="text-5xl font-extrabold tracking-tight text-[color:var(--ink)]"
@@ -112,7 +193,6 @@
             </nav>
         </header>
 
-        <!-- ===== Phones Grid ===== -->
         <main
             class="max-w-7xl mx-auto px-6 pb-28 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-14 place-items-center"
         >
@@ -126,61 +206,82 @@
                     <div
                         class="safe bg-gradient-to-b from-white via-indigo-50/60 to-white"
                     >
-                        <div class="px-6 pt-3">
-                            <p class="text-xs text-gray-400 text-center">
-                                1 / 3
-                            </p>
-                            <div
-                                class="mt-6 flex flex-col items-center text-center"
-                            >
+                        <div class="px-6 pt-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-gray-400"
+                                    >Step 1 / 3</span
+                                >
+                                <span class="text-xs text-gray-400">跳過</span>
+                            </div>
+                            <div class="mt-4 grid grid-cols-3 gap-4">
                                 <div
-                                    class="w-28 h-28 rounded-3xl bg-indigo-100 kpi-shadow flex items-center justify-center text-5xl"
+                                    class="ring-arc rounded-full w-20 h-20 mx-auto grid place-items-center text-xs text-indigo-700 font-bold"
                                 >
-                                    🌿
+                                    理財
                                 </div>
-                                <h3
-                                    class="mt-6 text-2xl font-bold text-[color:var(--ink)]"
+                                <div
+                                    class="ring-arc2 rounded-full w-20 h-20 mx-auto grid place-items-center text-xs text-amber-700 font-bold"
                                 >
-                                    把生活記錄得更溫柔
-                                </h3>
-                                <p class="mt-2 text-gray-600">
-                                    金錢 × 心情 × 行程 × 日記，一個 App
-                                    全包且不打擾。
-                                </p>
-                            </div>
-                            <div class="mt-8 space-y-3">
-                                <div class="flex items-center gap-3">
-                                    <i
-                                        class="fa-solid fa-bolt text-[color:var(--primary)]"
-                                    ></i
-                                    ><span
-                                        >一鍵新增（支出/心情/行程/日記）</span
-                                    >
+                                    心情
                                 </div>
-                                <div class="flex items-center gap-3">
-                                    <i
-                                        class="fa-regular fa-face-smile text-amber-500"
-                                    ></i
-                                    ><span>夜間一行日記提示</span>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <i
-                                        class="fa-solid fa-chart-line text-emerald-500"
-                                    ></i
-                                    ><span>每週 AI 洞察報告</span>
+                                <div
+                                    class="ring-arc3 rounded-full w-20 h-20 mx-auto grid place-items-center text-xs text-emerald-700 font-bold"
+                                >
+                                    行程
                                 </div>
                             </div>
-                        </div>
-                        <div class="absolute left-0 right-0 bottom-24 px-6">
-                            <button
-                                class="w-full py-3 rounded-2xl bg-[color:var(--primary)] text-white font-semibold shadow-lg hover:bg-[#5b7ddc] ring-focus"
+                            <h3
+                                class="mt-5 text-2xl font-bold text-[color:var(--ink)] text-center"
                             >
-                                繼續
-                            </button>
-                            <div class="mt-3 text-center text-sm text-gray-500">
-                                或 <span class="underline">稍後再說</span>
+                                用最少的動作，掌握一天
+                            </h3>
+                            <p class="mt-2 text-gray-600 text-center">
+                                LifeHack
+                                會自動連動行事曆/提醒，晚上再用一句話收尾。
+                            </p>
+
+                            <div class="mt-6 space-y-3">
+                                <div
+                                    class="flex items-center justify-between bg-white rounded-xl px-4 py-3 shadow-sm"
+                                >
+                                    <div class="flex items-center gap-3">
+                                        <i
+                                            class="fa-regular fa-bell text-[color:var(--primary)]"
+                                        ></i
+                                        ><span>允許通知（晚安提示）</span>
+                                    </div>
+                                    <button class="chip">允許</button>
+                                </div>
+                                <div
+                                    class="flex items-center justify-between bg-white rounded-xl px-4 py-3 shadow-sm"
+                                >
+                                    <div class="flex items-center gap-3">
+                                        <i
+                                            class="fa-regular fa-calendar text-emerald-600"
+                                        ></i
+                                        ><span>串接 Apple Calendar</span>
+                                    </div>
+                                    <button
+                                        class="chip bg-emerald-100 text-emerald-700"
+                                    >
+                                        連結
+                                    </button>
+                                </div>
                             </div>
                         </div>
+
+                        <div class="absolute left-0 right-0 bottom-24 px-6">
+                            <div class="seg w-full justify-between">
+                                <button class="active w-1/2">快速新增</button>
+                                <button class="w-1/2">週報洞察</button>
+                            </div>
+                            <button
+                                class="mt-3 w-full py-3 rounded-2xl bg-[color:var(--primary)] text-white font-semibold shadow-lg hover:bg-[#5b7ddc] ring-focus"
+                            >
+                                開始使用
+                            </button>
+                        </div>
+
                         <div
                             class="tabbar grid grid-cols-5 text-xs text-gray-500 place-items-center"
                         >
@@ -198,9 +299,7 @@
                         </div>
                     </div>
                 </div>
-                <p class="caption mt-2">
-                    首次啟用：品牌介紹、允許通知/行事曆等權限導引
-                </p>
+                <p class="caption mt-2">加上環圈總覽與權限卡，資訊更完整</p>
             </section>
 
             <!-- ============== Home ============== -->
@@ -211,7 +310,7 @@
                 <div class="phone">
                     <div class="island"></div>
                     <div class="safe bg-[#FFFDF7]">
-                        <header class="px-6 pt-2">
+                        <header class="px-6 pt-2 space-y-3">
                             <div class="flex justify-between items-end">
                                 <div>
                                     <div class="text-sm text-gray-500">
@@ -225,44 +324,115 @@
                                     class="fa-solid fa-gear text-gray-400 text-xl"
                                 ></i>
                             </div>
-                            <div class="mt-3 flex gap-2 overflow-x-auto">
-                                <span class="chip">全部</span>
-                                <span class="chip bg-indigo-100">支出</span>
-                                <span class="chip bg-amber-100 text-amber-700"
-                                    >心情</span
+
+                            <!-- 週曆條 -->
+                            <div class="flex gap-2 overflow-x-auto">
+                                <button
+                                    class="px-3 py-2 rounded-xl bg-white shadow-sm text-sm"
                                 >
-                                <span
-                                    class="chip bg-emerald-100 text-emerald-700"
-                                    >行程</span
+                                    Mon 21
+                                </button>
+                                <button
+                                    class="px-3 py-2 rounded-xl bg-white shadow-sm text-sm"
                                 >
-                                <span class="chip bg-gray-100 text-gray-700"
-                                    >日記</span
+                                    Tue 22
+                                </button>
+                                <button
+                                    class="px-3 py-2 rounded-xl bg-[color:var(--primary)] text-white shadow-sm text-sm"
                                 >
+                                    Wed 23
+                                </button>
+                                <button
+                                    class="px-3 py-2 rounded-xl bg-white shadow-sm text-sm"
+                                >
+                                    Thu 24
+                                </button>
+                                <button
+                                    class="px-3 py-2 rounded-xl bg-white shadow-sm text-sm"
+                                >
+                                    Fri 25
+                                </button>
                             </div>
-                            <div
-                                class="mt-3 glass rounded-xl px-3 py-2 text-sm text-gray-700"
-                            >
-                                今天課多一點，22:00 別忘了放鬆 10 分鐘 🌿
+
+                            <!-- 快捷＋濾鏡 -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex gap-2">
+                                    <span class="chip">全部</span>
+                                    <span class="chip bg-indigo-100">支出</span>
+                                    <span
+                                        class="chip bg-amber-100 text-amber-700"
+                                        >心情</span
+                                    >
+                                    <span
+                                        class="chip bg-emerald-100 text-emerald-700"
+                                        >行程</span
+                                    >
+                                </div>
+                                <div class="seg">
+                                    <button class="active">時間</button>
+                                    <button>類別</button>
+                                </div>
+                            </div>
+
+                            <!-- 今日 KPI -->
+                            <div class="grid grid-cols-3 gap-3">
+                                <div
+                                    class="bg-white rounded-2xl p-3 shadow-sm text-center"
+                                >
+                                    <div class="text-xs text-gray-500">
+                                        支出
+                                    </div>
+                                    <div
+                                        class="text-lg font-bold text-indigo-600"
+                                    >
+                                        NT$ 120
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-white rounded-2xl p-3 shadow-sm text-center"
+                                >
+                                    <div class="text-xs text-gray-500">
+                                        心情
+                                    </div>
+                                    <div
+                                        class="text-lg font-bold text-amber-600"
+                                    >
+                                        🙂 3.8
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-white rounded-2xl p-3 shadow-sm text-center"
+                                >
+                                    <div class="text-xs text-gray-500">
+                                        事件
+                                    </div>
+                                    <div
+                                        class="text-lg font-bold text-emerald-600"
+                                    >
+                                        3
+                                    </div>
+                                </div>
                             </div>
                         </header>
 
-                        <main class="px-6 mt-4 space-y-4">
-                            <!-- Expense card -->
+                        <!-- Timeline -->
+                        <main class="px-6 mt-4 space-y-3 pb-24">
+                            <div class="text-xs text-gray-400">上午</div>
                             <article
                                 class="bg-white rounded-2xl p-4 shadow-sm flex justify-between items-center"
                             >
                                 <div class="flex items-center gap-3">
                                     <div
-                                        class="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center"
+                                        class="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-600 grid place-items-center"
                                     >
                                         <i class="fa-solid fa-sack-dollar"></i>
                                     </div>
                                     <div>
                                         <div class="font-semibold">
-                                            午餐支出
+                                            早餐咖啡
                                         </div>
                                         <div class="text-gray-500 text-sm">
-                                            NT$120 · 12:30
+                                            NT$55 · 08:40
                                         </div>
                                     </div>
                                 </div>
@@ -272,13 +442,13 @@
                                 >
                             </article>
 
-                            <!-- Mood card -->
+                            <div class="text-xs text-gray-400 pt-2">下午</div>
                             <article
                                 class="bg-white rounded-2xl p-4 shadow-sm flex justify-between items-center"
                             >
                                 <div class="flex items-center gap-3">
                                     <div
-                                        class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center"
+                                        class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-600 grid place-items-center"
                                     >
                                         <i class="fa-regular fa-face-smile"></i>
                                     </div>
@@ -297,13 +467,12 @@
                                 >
                             </article>
 
-                            <!-- Event card -->
                             <article
                                 class="bg-white rounded-2xl p-4 shadow-sm flex justify-between items-center"
                             >
                                 <div class="flex items-center gap-3">
                                     <div
-                                        class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center"
+                                        class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-600 grid place-items-center"
                                     >
                                         <i class="fa-solid fa-calendar-day"></i>
                                     </div>
@@ -312,7 +481,7 @@
                                             系會會議
                                         </div>
                                         <div class="text-gray-500 text-sm">
-                                            19:00
+                                            19:00 · E402
                                         </div>
                                     </div>
                                 </div>
@@ -321,6 +490,19 @@
                                     >行程</span
                                 >
                             </article>
+
+                            <!-- 洞察 toast -->
+                            <div
+                                class="glass rounded-2xl px-3 py-2 text-sm flex items-center gap-2"
+                            >
+                                <i
+                                    class="fa-solid fa-seedling text-emerald-600"
+                                ></i>
+                                <span
+                                    >週三支出偏高，建議把咖啡移到週四節省
+                                    NT$120/月</span
+                                >
+                            </div>
                         </main>
 
                         <button
@@ -341,7 +523,7 @@
                                 <div>分析</div>
                             </div>
                             <div
-                                class="bg-[color:var(--primary)] text-white w-11 h-11 -mt-6 rounded-full flex items-center justify-center text-lg shadow-lg"
+                                class="bg-[color:var(--primary)] text-white w-11 h-11 -mt-6 rounded-full grid place-items-center text-lg shadow-lg"
                             >
                                 +
                             </div>
@@ -357,30 +539,31 @@
                     </div>
                 </div>
                 <p class="caption mt-2">
-                    時間軸卡片可左滑編輯/刪除，FAB 叫出 Add Panel
+                    新增週曆條 / KPI 區 / 洞察 toast，層次更清楚
                 </p>
             </section>
 
             <!-- ============== Add Panel ============== -->
             <section id="add" class="w-full flex flex-col items-center">
                 <h2 class="text-lg font-semibold text-[color:var(--ink)] mb-3">
-                    Add Panel / 快速新增
+                    Add Panel / Bottom-sheet 風格
                 </h2>
                 <div class="phone">
                     <div class="island"></div>
-                    <div class="safe bg-white">
-                        <header class="px-6 pt-3">
-                            <h1 class="text-2xl font-bold">新增紀錄</h1>
-                            <p class="text-gray-500 text-sm mt-1">
-                                選一個類型開始吧
-                            </p>
+                    <div class="safe bg-white relative">
+                        <header
+                            class="px-6 pt-3 flex items-center justify-between"
+                        >
+                            <h1 class="text-2xl font-bold">新增</h1>
+                            <div class="seg">
+                                <button class="active">常用</button
+                                ><button>全部</button>
+                            </div>
                         </header>
                         <main class="px-6 mt-5">
-                            <div
-                                class="grid grid-cols-2 gap-14 place-items-center"
-                            >
+                            <div class="grid grid-cols-4 gap-3">
                                 <button
-                                    class="w-28 h-28 rounded-2xl bg-indigo-50 text-indigo-600 font-semibold shadow-sm hover:shadow kpi-shadow flex items-center justify-center flex-col"
+                                    class="h-28 rounded-2xl bg-indigo-50 text-indigo-600 font-semibold shadow-sm hover:shadow flex flex-col items-center justify-center"
                                 >
                                     <i
                                         class="fa-solid fa-sack-dollar text-2xl mb-1"
@@ -388,7 +571,7 @@
                                     >支出
                                 </button>
                                 <button
-                                    class="w-28 h-28 rounded-2xl bg-amber-50 text-amber-600 font-semibold shadow-sm hover:shadow flex items-center justify-center flex-col"
+                                    class="h-28 rounded-2xl bg-amber-50 text-amber-600 font-semibold shadow-sm hover:shadow flex flex-col items-center justify-center"
                                 >
                                     <i
                                         class="fa-regular fa-face-smile text-2xl mb-1"
@@ -396,7 +579,7 @@
                                     >心情
                                 </button>
                                 <button
-                                    class="w-28 h-28 rounded-2xl bg-emerald-50 text-emerald-600 font-semibold shadow-sm hover:shadow flex items-center justify-center flex-col"
+                                    class="h-28 rounded-2xl bg-emerald-50 text-emerald-600 font-semibold shadow-sm hover:shadow flex flex-col items-center justify-center"
                                 >
                                     <i
                                         class="fa-solid fa-calendar-day text-2xl mb-1"
@@ -404,35 +587,46 @@
                                     >行程
                                 </button>
                                 <button
-                                    class="w-28 h-28 rounded-2xl bg-gray-50 text-gray-700 font-semibold shadow-sm hover:shadow flex items-center justify-center flex-col"
+                                    class="h-28 rounded-2xl bg-gray-50 text-gray-700 font-semibold shadow-sm hover:shadow flex flex-col items-center justify-center"
                                 >
                                     <i class="fa-solid fa-pen text-2xl mb-1"></i
                                     >日記
                                 </button>
                             </div>
-                            <div class="mt-8">
-                                <h4 class="text-sm text-gray-500 mb-2">
-                                    最近常用
-                                </h4>
-                                <div class="flex gap-2 overflow-x-auto">
-                                    <span class="chip">咖啡 NT$55</span>
-                                    <span class="chip">搭車 NT$20</span>
-                                    <span
-                                        class="chip bg-emerald-100 text-emerald-700"
-                                        >跑步 30 分</span
-                                    >
-                                    <span class="chip bg-gray-100 text-gray-700"
-                                        >三行日記</span
-                                    >
-                                </div>
+
+                            <h4 class="mt-6 text-sm text-gray-500">模板</h4>
+                            <div class="mt-2 grid grid-cols-2 gap-3">
+                                <button
+                                    class="bg-white rounded-xl px-4 py-3 shadow-sm text-left"
+                                >
+                                    <div class="font-semibold">咖啡 NT$55</div>
+                                    <div class="text-xs text-gray-500">
+                                        餐飲 · 中午
+                                    </div>
+                                </button>
+                                <button
+                                    class="bg-white rounded-xl px-4 py-3 shadow-sm text-left"
+                                >
+                                    <div class="font-semibold">跑步 30 分</div>
+                                    <div class="text-xs text-gray-500">
+                                        運動 · 晚上
+                                    </div>
+                                </button>
+                            </div>
+
+                            <h4 class="mt-6 text-sm text-gray-500">最近</h4>
+                            <div class="mt-2 flex gap-2 overflow-x-auto">
+                                <span class="chip">早餐 45</span
+                                ><span class="chip">捷運 20</span
+                                ><span class="chip">心情🙂</span
+                                ><span class="chip">會議</span>
                             </div>
                         </main>
+
                         <div class="tabbar"></div>
                     </div>
                 </div>
-                <p class="caption mt-2">
-                    四宮格＋常用捷徑；可延伸為 Bottom Sheet 互動
-                </p>
+                <p class="caption mt-2">四欄網格 + 模板 + 最近，效率更高</p>
             </section>
 
             <!-- ============== Expense Editor ============== -->
@@ -456,32 +650,42 @@
                                 儲存
                             </button>
                         </header>
-                        <main class="px-6 mt-4 space-y-4">
-                            <div
-                                class="text-5xl font-extrabold tracking-tight text-[color:var(--ink)]"
-                            >
-                                NT$
-                                <input
-                                    class="w-40 outline-none border-b border-indigo-200 focus:border-indigo-400 text-5xl pl-2"
-                                    value="120"
-                                />
+
+                        <main class="px-6 mt-3 space-y-4 pb-24">
+                            <!-- 金額 + 類別 -->
+                            <div class="bg-indigo-50 rounded-2xl p-4">
+                                <div class="text-xs text-indigo-700">金額</div>
+                                <div
+                                    class="mt-1 text-5xl font-extrabold tracking-tight text-[color:var(--ink)]"
+                                >
+                                    NT$
+                                    <input
+                                        class="w-44 outline-none bg-transparent border-b border-indigo-300 focus:border-indigo-500 text-5xl pl-2"
+                                        value="120"
+                                    />
+                                </div>
+                                <div
+                                    class="mt-3 grid grid-cols-6 gap-2 text-center"
+                                >
+                                    <button class="chip">餐飲</button
+                                    ><button class="chip">交通</button
+                                    ><button class="chip">娛樂</button>
+                                    <button class="chip bg-indigo-100">
+                                        學習</button
+                                    ><button class="chip">日用</button
+                                    ><button class="chip">其他</button>
+                                </div>
                             </div>
-                            <div class="grid grid-cols-3 gap-2">
-                                <span class="chip">餐飲</span
-                                ><span class="chip">交通</span
-                                ><span class="chip">娛樂</span>
-                                <span class="chip bg-indigo-100">學習</span
-                                ><span class="chip">日用</span
-                                ><span class="chip">其他</span>
-                            </div>
+
                             <label class="block">
                                 <span class="text-sm text-gray-500">標題</span>
                                 <input
                                     class="mt-1 w-full border rounded-xl px-3 py-2 ring-focus"
-                                    placeholder="寫點什麼…（如：午餐）"
+                                    placeholder="如：午餐 / 書籍"
                                     value="午餐支出"
                                 />
                             </label>
+
                             <div class="grid grid-cols-2 gap-3">
                                 <label class="block"
                                     ><span class="text-sm text-gray-500"
@@ -499,16 +703,81 @@
                                         value="12:30"
                                 /></label>
                             </div>
-                            <button
-                                class="w-full py-3 rounded-2xl bg-indigo-50 text-indigo-700 font-semibold"
-                            >
-                                <i class="fa-regular fa-image mr-1"></i
-                                >加入收據照片
-                            </button>
+
+                            <div>
+                                <div class="text-sm text-gray-500 mb-2">
+                                    標籤
+                                </div>
+                                <div class="flex gap-2 flex-wrap">
+                                    <span class="chip">課間</span
+                                    ><span class="chip">朋友</span
+                                    ><span class="chip">校園</span
+                                    ><span class="chip">外食</span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <button
+                                    class="w-full py-3 rounded-2xl bg-indigo-50 text-indigo-700 font-semibold"
+                                >
+                                    <i class="fa-regular fa-image mr-1"></i
+                                    >收據照片
+                                </button>
+                                <button
+                                    class="w-full py-3 rounded-2xl bg-gray-50 text-gray-700 font-semibold"
+                                >
+                                    <i class="fa-solid fa-location-dot mr-1"></i
+                                    >位置
+                                </button>
+                            </div>
+
+                            <!-- 數字鍵盤（視覺示意） -->
+                            <div class="grid grid-cols-3 gap-2 text-lg">
+                                <button class="bg-gray-50 rounded-xl py-3">
+                                    1
+                                </button>
+                                <button class="bg-gray-50 rounded-xl py-3">
+                                    2
+                                </button>
+                                <button class="bg-gray-50 rounded-xl py-3">
+                                    3
+                                </button>
+                                <button class="bg-gray-50 rounded-xl py-3">
+                                    4
+                                </button>
+                                <button class="bg-gray-50 rounded-xl py-3">
+                                    5
+                                </button>
+                                <button class="bg-gray-50 rounded-xl py-3">
+                                    6
+                                </button>
+                                <button class="bg-gray-50 rounded-xl py-3">
+                                    7
+                                </button>
+                                <button class="bg-gray-50 rounded-xl py-3">
+                                    8
+                                </button>
+                                <button class="bg-gray-50 rounded-xl py-3">
+                                    9
+                                </button>
+                                <button class="bg-gray-50 rounded-xl py-3">
+                                    .
+                                </button>
+                                <button class="bg-gray-50 rounded-xl py-3">
+                                    0
+                                </button>
+                                <button
+                                    class="bg-indigo-600 text-white rounded-xl py-3"
+                                >
+                                    輸入
+                                </button>
+                            </div>
                         </main>
                     </div>
                 </div>
-                <p class="caption mt-2">大數字輸入＋類別 chip＋可加收據</p>
+                <p class="caption mt-2">
+                    更完整：類別網格 / 標籤 / 位置 / 數字鍵盤
+                </p>
             </section>
 
             <!-- ============== Mood Editor ============== -->
@@ -532,58 +801,82 @@
                                 儲存
                             </button>
                         </header>
-                        <main class="px-6 mt-6 space-y-5">
+                        <main class="px-6 mt-4 space-y-5">
+                            <!-- 情緒滑桿 -->
                             <div>
-                                <div class="text-sm text-gray-500 mb-2">
+                                <div class="text-sm text-gray-500 mb-1">
                                     今天的感覺
                                 </div>
-                                <div class="flex justify-between">
-                                    <button
-                                        class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-500 text-xl"
+                                <div class="flex items-center gap-3">
+                                    <div class="text-3xl">🙂</div>
+                                    <input
+                                        type="range"
+                                        min="1"
+                                        max="5"
+                                        value="4"
+                                        class="w-full accent-[color:var(--amber)]"
+                                        style="
+                                            background: linear-gradient(
+                                                90deg,
+                                                #fecaca,
+                                                #fde68a,
+                                                #bbf7d0
+                                            );
+                                            height: 6px;
+                                            border-radius: 999px;
+                                        "
+                                    />
+                                    <div
+                                        class="text-sm text-gray-500 w-10 text-right"
                                     >
-                                        😟
-                                    </button>
-                                    <button
-                                        class="w-12 h-12 rounded-2xl bg-orange-50 text-orange-500 text-xl"
-                                    >
-                                        😕
-                                    </button>
-                                    <button
-                                        class="w-12 h-12 rounded-2xl bg-gray-50 text-gray-700 text-xl"
-                                    >
-                                        😐
-                                    </button>
-                                    <button
-                                        class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-500 text-xl"
-                                    >
-                                        🙂
-                                    </button>
-                                    <button
-                                        class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-500 text-xl"
-                                    >
-                                        😄
-                                    </button>
+                                        4/5
+                                    </div>
                                 </div>
                             </div>
+
                             <label class="block">
                                 <span class="text-sm text-gray-500"
                                     >一句話</span
                                 >
                                 <input
                                     class="mt-1 w-full border rounded-xl px-3 py-2 ring-focus"
-                                    placeholder="例如：午後陽光很好，心情穩定。"
+                                    placeholder="午後陽光很好，心情穩定。"
                                 />
                             </label>
-                            <button
-                                class="w-full py-3 rounded-2xl bg-sky-50 text-sky-700 font-semibold"
-                            >
-                                <i class="fa-solid fa-wind mr-1"></i> 呼吸 1
-                                分鐘
-                            </button>
+
+                            <div>
+                                <div class="text-sm text-gray-500 mb-2">
+                                    觸發因素
+                                </div>
+                                <div class="flex gap-2 flex-wrap">
+                                    <span
+                                        class="chip bg-emerald-100 text-emerald-700"
+                                        >運動</span
+                                    >
+                                    <span class="chip">朋友</span>
+                                    <span class="chip">考試</span>
+                                    <span class="chip">音樂</span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <button
+                                    class="py-3 rounded-2xl bg-sky-50 text-sky-700 font-semibold"
+                                >
+                                    <i class="fa-solid fa-wind mr-1"></i> 呼吸 1
+                                    分鐘
+                                </button>
+                                <button
+                                    class="py-3 rounded-2xl bg-gray-50 text-gray-700 font-semibold"
+                                >
+                                    <i class="fa-solid fa-music mr-1"></i>
+                                    舒緩播放清單
+                                </button>
+                            </div>
                         </main>
                     </div>
                 </div>
-                <p class="caption mt-2">5 段心情＋一句話＋可選呼吸輔助</p>
+                <p class="caption mt-2">滑桿 + 因素 chips + 放鬆動作</p>
             </section>
 
             <!-- ============== Event Editor ============== -->
@@ -610,13 +903,44 @@
                                 儲存
                             </button>
                         </header>
-                        <main class="px-6 mt-4 space-y-4">
+                        <main class="px-6 mt-3 space-y-4">
+                            <!-- 週曆條 -->
+                            <div class="flex gap-2 overflow-x-auto">
+                                <button
+                                    class="px-3 py-2 rounded-xl bg-white shadow-sm text-sm"
+                                >
+                                    Mon 21
+                                </button>
+                                <button
+                                    class="px-3 py-2 rounded-xl bg-white shadow-sm text-sm"
+                                >
+                                    Tue 22
+                                </button>
+                                <button
+                                    class="px-3 py-2 rounded-xl bg-[color:var(--primary)] text-white shadow-sm text-sm"
+                                >
+                                    Wed 23
+                                </button>
+                                <button
+                                    class="px-3 py-2 rounded-xl bg-white shadow-sm text-sm"
+                                >
+                                    Thu 24
+                                </button>
+                                <button
+                                    class="px-3 py-2 rounded-xl bg-white shadow-sm text-sm"
+                                >
+                                    Fri 25
+                                </button>
+                            </div>
+
                             <label class="block"
-                                ><span class="text-sm text-gray-500">標題</span
-                                ><input
+                                ><span class="text-sm text-gray-500">標題</span>
+                                <input
                                     class="mt-1 w-full border rounded-xl px-3 py-2 ring-focus"
                                     placeholder="例如：系會會議"
-                            /></label>
+                                />
+                            </label>
+
                             <div class="grid grid-cols-2 gap-3">
                                 <label class="block"
                                     ><span class="text-sm text-gray-500"
@@ -633,42 +957,82 @@
                                         class="mt-1 w-full border rounded-xl px-3 py-2 ring-focus"
                                 /></label>
                             </div>
-                            <div
-                                class="flex items-center justify-between border rounded-xl px-4 py-3"
-                            >
-                                <div class="text-sm">
-                                    <div class="font-medium">加入行事曆</div>
-                                    <div class="text-gray-500">
-                                        寫入 Apple Calendar
-                                    </div>
-                                </div>
-                                <label
-                                    class="inline-flex items-center cursor-pointer"
-                                >
-                                    <input
-                                        type="checkbox"
-                                        class="sr-only peer"
-                                        checked
+
+                            <label class="block"
+                                ><span class="text-sm text-gray-500">地點</span>
+                                <input
+                                    class="mt-1 w-full border rounded-xl px-3 py-2 ring-focus"
+                                    placeholder="E402 或輸入地址…"
+                                />
+                            </label>
+
+                            <!-- 偽地圖 -->
+                            <div class="rounded-2xl overflow-hidden border">
+                                <svg viewBox="0 0 320 120" class="w-full h-28">
+                                    <rect
+                                        width="320"
+                                        height="120"
+                                        fill="#eef2ff"
                                     />
-                                    <div
-                                        class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-emerald-500 relative after:content-[''] after:w-5 after:h-5 after:bg-white after:rounded-full after:absolute after:top-0.5 after:left-0.5 peer-checked:after:translate-x-5 after:transition"
-                                    ></div>
+                                    <path
+                                        d="M20,90 C80,40 160,140 220,60 280,-10 320,90 320,90"
+                                        stroke="#6B8EE8"
+                                        stroke-width="4"
+                                        fill="none"
+                                    />
+                                    <circle
+                                        cx="220"
+                                        cy="60"
+                                        r="6"
+                                        fill="#ef4444"
+                                    />
+                                </svg>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div
+                                    class="flex items-center justify-between border rounded-xl px-4 py-3"
+                                >
+                                    <div class="text-sm">
+                                        <div class="font-medium">
+                                            加入行事曆
+                                        </div>
+                                        <div class="text-gray-500">
+                                            寫入 Apple Calendar
+                                        </div>
+                                    </div>
+                                    <label
+                                        class="inline-flex items-center cursor-pointer"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            class="sr-only peer"
+                                            checked
+                                        />
+                                        <div
+                                            class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-emerald-500 relative after:content-[''] after:w-5 after:h-5 after:bg-white after:rounded-full after:absolute after:top-0.5 after:left-0.5 peer-checked:after:translate-x-5 after:transition"
+                                        ></div>
+                                    </label>
+                                </div>
+                                <label class="block"
+                                    ><span class="text-sm text-gray-500"
+                                        >提醒</span
+                                    >
+                                    <select
+                                        class="mt-1 w-full border rounded-xl px-3 py-2 ring-focus"
+                                    >
+                                        <option>不提醒</option>
+                                        <option>提前 5 分鐘</option>
+                                        <option>提前 15 分鐘</option>
+                                    </select>
                                 </label>
                             </div>
-                            <label class="block"
-                                ><span class="text-sm text-gray-500">提醒</span>
-                                <select
-                                    class="mt-1 w-full border rounded-xl px-3 py-2 ring-focus"
-                                >
-                                    <option>不提醒</option>
-                                    <option>提前 5 分鐘</option>
-                                    <option>提前 15 分鐘</option>
-                                </select>
-                            </label>
                         </main>
                     </div>
                 </div>
-                <p class="caption mt-2">與 Apple Calendar 整合的基本欄位</p>
+                <p class="caption mt-2">
+                    週曆條 + 地點 + 地圖預覽 + Calendar 切換
+                </p>
             </section>
 
             <!-- ============== Note Editor ============== -->
@@ -692,7 +1056,38 @@
                                 儲存
                             </button>
                         </header>
-                        <main class="px-6 mt-4 space-y-4">
+                        <main class="px-6 mt-3 space-y-4 pb-24">
+                            <!-- 工具列 -->
+                            <div
+                                class="bg-gray-50 rounded-2xl p-2 flex items-center gap-2"
+                            >
+                                <button
+                                    class="px-3 py-2 rounded-xl bg-white shadow-sm"
+                                >
+                                    <i class="fa-solid fa-bold"></i>
+                                </button>
+                                <button
+                                    class="px-3 py-2 rounded-xl bg-white shadow-sm"
+                                >
+                                    <i class="fa-solid fa-italic"></i>
+                                </button>
+                                <button
+                                    class="px-3 py-2 rounded-xl bg-white shadow-sm"
+                                >
+                                    <i class="fa-solid fa-list-ul"></i>
+                                </button>
+                                <button
+                                    class="px-3 py-2 rounded-xl bg-white shadow-sm"
+                                >
+                                    <i class="fa-regular fa-image"></i>
+                                </button>
+                                <button
+                                    class="px-3 py-2 rounded-xl bg-white shadow-sm"
+                                >
+                                    <i class="fa-solid fa-microphone"></i>
+                                </button>
+                            </div>
+
                             <input
                                 class="w-full border-0 border-b border-gray-200 focus:border-indigo-300 text-2xl font-semibold py-2 outline-none"
                                 placeholder="今天的標題…"
@@ -702,6 +1097,7 @@
                                 class="w-full border rounded-2xl px-3 py-3 ring-focus"
                                 placeholder="寫幾句今天的發現、感謝或反思…"
                             ></textarea>
+
                             <div>
                                 <div class="text-sm text-gray-500 mb-2">
                                     範本
@@ -715,7 +1111,7 @@
                         </main>
                     </div>
                 </div>
-                <p class="caption mt-2">標題＋內文＋模板 chips</p>
+                <p class="caption mt-2">加入 Markdown 工具列與語音入口</p>
             </section>
 
             <!-- ============== Stats ============== -->
@@ -730,13 +1126,13 @@
                             class="px-6 pt-3 flex justify-between items-center"
                         >
                             <h1 class="text-2xl font-bold">週報分析</h1>
-                            <div
-                                class="text-sm bg-white rounded-xl px-3 py-1 shadow-sm"
-                            >
-                                週 <span class="text-gray-400">/ 月</span>
+                            <div class="seg">
+                                <button class="active">週</button
+                                ><button>月</button>
                             </div>
                         </header>
-                        <main class="px-6 mt-4 space-y-4 pb-20">
+                        <main class="px-6 mt-3 space-y-4 pb-24">
+                            <!-- KPI -->
                             <div class="grid grid-cols-3 gap-3">
                                 <div
                                     class="bg-white rounded-2xl p-3 text-center shadow-sm kpi-shadow"
@@ -766,66 +1162,253 @@
                                 </div>
                             </div>
 
-                            <!-- 支出趨勢圖（SVG） -->
+                            <!-- 支出甜甜圈 -->
                             <div class="bg-white rounded-2xl p-4 shadow-sm">
-                                <div class="font-medium mb-2">支出趨勢</div>
-                                <svg viewBox="0 0 320 120" class="w-full h-28">
-                                    <defs>
-                                        <linearGradient
-                                            id="g1"
-                                            x1="0"
-                                            x2="0"
-                                            y1="0"
-                                            y2="1"
+                                <div class="font-medium mb-2">支出類別</div>
+                                <div class="flex items-center gap-4">
+                                    <svg
+                                        viewBox="0 0 120 120"
+                                        class="w-28 h-28"
+                                    >
+                                        <circle
+                                            cx="60"
+                                            cy="60"
+                                            r="40"
+                                            stroke="#e5e7eb"
+                                            stroke-width="18"
+                                            fill="none"
+                                        />
+                                        <circle
+                                            cx="60"
+                                            cy="60"
+                                            r="40"
+                                            stroke="#6B8EE8"
+                                            stroke-width="18"
+                                            fill="none"
+                                            stroke-dasharray="190 251"
+                                            transform="rotate(-90 60 60)"
+                                        />
+                                        <circle
+                                            cx="60"
+                                            cy="60"
+                                            r="40"
+                                            stroke="#f59e0b"
+                                            stroke-width="18"
+                                            fill="none"
+                                            stroke-dasharray="40 251"
+                                            transform="rotate(20 60 60)"
+                                        />
+                                        <circle
+                                            cx="60"
+                                            cy="60"
+                                            r="40"
+                                            stroke="#10b981"
+                                            stroke-width="18"
+                                            fill="none"
+                                            stroke-dasharray="21 251"
+                                            transform="rotate(70 60 60)"
+                                        />
+                                    </svg>
+                                    <div class="text-sm">
+                                        <div>
+                                            <span
+                                                class="inline-block w-3 h-3 rounded bg-[#6B8EE8] mr-2"
+                                            ></span
+                                            >餐飲 62%
+                                        </div>
+                                        <div>
+                                            <span
+                                                class="inline-block w-3 h-3 rounded bg-[#f59e0b] mr-2"
+                                            ></span
+                                            >交通 13%
+                                        </div>
+                                        <div>
+                                            <span
+                                                class="inline-block w-3 h-3 rounded bg-[#10b981] mr-2"
+                                            ></span
+                                            >學習 8%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 情緒熱力週曆 -->
+                            <div class="bg-white rounded-2xl p-4 shadow-sm">
+                                <div
+                                    class="flex items-center justify-between mb-2"
+                                >
+                                    <div class="font-medium">
+                                        情緒熱圖（近 14 天）
+                                    </div>
+                                    <!-- 連續色階 legend -->
+                                    <div
+                                        class="flex items-center gap-2 text-xs text-gray-500"
+                                    >
+                                        <span>低</span>
+                                        <div
+                                            class="h-1.5 w-20 rounded bg-gradient-to-r from-amber-200 via-emerald-300 to-emerald-600"
+                                        ></div>
+                                        <span>高</span>
+                                    </div>
+                                </div>
+
+                                <!-- 星期標籤 -->
+                                <div
+                                    class="grid grid-cols-[auto,repeat(7,1fr)] gap-1 items-center mb-1"
+                                >
+                                    <div></div>
+                                    <div
+                                        class="text-[10px] text-gray-400 text-center"
+                                    >
+                                        一
+                                    </div>
+                                    <div
+                                        class="text-[10px] text-gray-400 text-center"
+                                    >
+                                        二
+                                    </div>
+                                    <div
+                                        class="text-[10px] text-gray-400 text-center"
+                                    >
+                                        三
+                                    </div>
+                                    <div
+                                        class="text-[10px] text-gray-400 text-center"
+                                    >
+                                        四
+                                    </div>
+                                    <div
+                                        class="text-[10px] text-gray-400 text-center"
+                                    >
+                                        五
+                                    </div>
+                                    <div
+                                        class="text-[10px] text-gray-400 text-center"
+                                    >
+                                        六
+                                    </div>
+                                    <div
+                                        class="text-[10px] text-gray-400 text-center"
+                                    >
+                                        日
+                                    </div>
+                                </div>
+
+                                <!-- 兩週 x 7 天，色塊深淺表情緒高低；空白代表未記錄 -->
+                                <div
+                                    class="grid grid-cols-[auto,repeat(7,1fr)] gap-1 items-center"
+                                >
+                                    <div class="text-[10px] text-gray-400 mr-1">
+                                        上週
+                                    </div>
+                                    <div
+                                        class="heat heat-2"
+                                        aria-label="上週一：中低"
+                                    ></div>
+                                    <div
+                                        class="heat heat-3"
+                                        aria-label="上週二：中高"
+                                    ></div>
+                                    <div
+                                        class="heat heat-4"
+                                        aria-label="上週三：高"
+                                    ></div>
+                                    <div
+                                        class="heat heat-1"
+                                        aria-label="上週四：低"
+                                    ></div>
+                                    <div
+                                        class="heat heat-3"
+                                        aria-label="上週五：中高"
+                                    ></div>
+                                    <div
+                                        class="heat heat-0"
+                                        aria-label="上週六：未記錄"
+                                    ></div>
+                                    <div
+                                        class="heat heat-2"
+                                        aria-label="上週日：中低"
+                                    ></div>
+
+                                    <div class="text-[10px] text-gray-400 mr-1">
+                                        本週
+                                    </div>
+                                    <div
+                                        class="heat heat-1"
+                                        aria-label="本週一：低"
+                                    ></div>
+                                    <div
+                                        class="heat heat-2"
+                                        aria-label="本週二：中低"
+                                    ></div>
+                                    <div
+                                        class="heat heat-3"
+                                        aria-label="本週三：中高"
+                                    ></div>
+                                    <div
+                                        class="heat heat-4"
+                                        aria-label="本週四：高"
+                                    ></div>
+                                    <div
+                                        class="heat heat-3"
+                                        aria-label="本週五：中高"
+                                    ></div>
+                                    <div
+                                        class="heat heat-2"
+                                        aria-label="本週六：中低"
+                                    ></div>
+                                    <div
+                                        class="heat heat-1"
+                                        aria-label="本週日：低"
+                                    ></div>
+                                </div>
+
+                                <div class="text-[10px] text-gray-400 mt-2">
+                                    空白代表未記錄；色塊越深代表情緒越好
+                                </div>
+                            </div>
+
+                            <!-- 時段分佈 -->
+                            <div class="bg-white rounded-2xl p-4 shadow-sm">
+                                <div class="font-medium mb-2">事件時段分佈</div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex items-center">
+                                        <span class="w-14 text-gray-500"
+                                            >上午</span
                                         >
-                                            <stop
-                                                offset="0%"
-                                                stop-color="#6B8EE8"
-                                                stop-opacity="0.6"
-                                            />
-                                            <stop
-                                                offset="100%"
-                                                stop-color="#6B8EE8"
-                                                stop-opacity="0"
-                                            />
-                                        </linearGradient>
-                                    </defs>
-                                    <polyline
-                                        fill="url(#g1)"
-                                        stroke="none"
-                                        points="0,110 0,80 40,70 80,90 120,65 160,50 200,60 240,40 280,55 320,45 320,110"
-                                    />
-                                    <polyline
-                                        fill="none"
-                                        stroke="#6B8EE8"
-                                        stroke-width="3"
-                                        points="0,80 40,70 80,90 120,65 160,50 200,60 240,40 280,55 320,45"
-                                    />
-                                </svg>
+                                        <div
+                                            class="h-2 bg-indigo-200 rounded w-1/3"
+                                        ></div>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-14 text-gray-500"
+                                            >下午</span
+                                        >
+                                        <div
+                                            class="h-2 bg-indigo-400 rounded w-2/3"
+                                        ></div>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-14 text-gray-500"
+                                            >晚上</span
+                                        >
+                                        <div
+                                            class="h-2 bg-indigo-300 rounded w-1/2"
+                                        ></div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <!-- 情緒變化圖（SVG） -->
-                            <div class="bg-white rounded-2xl p-4 shadow-sm">
-                                <div class="font-medium mb-2">情緒變化</div>
-                                <svg viewBox="0 0 320 120" class="w-full h-28">
-                                    <polyline
-                                        fill="none"
-                                        stroke="#f59e0b"
-                                        stroke-width="3"
-                                        points="0,70 40,65 80,72 120,60 160,64 200,56 240,50 280,58 320,54"
-                                    />
-                                </svg>
-                            </div>
-
+                            <!-- 洞察 -->
                             <div class="glass rounded-2xl px-4 py-3 text-sm">
                                 🌿
-                                洞察：週三行程最多、支出也偏高；建議將健身移到週四，平均化壓力。
+                                洞察：週三行程最多且支出偏高；嘗試把健身移到週四，平均化壓力並降低外食。
                             </div>
                         </main>
                         <div class="tabbar"></div>
                     </div>
                 </div>
-                <p class="caption mt-2">KPI + 折線圖（純 SVG）+ AI 文本洞察</p>
+                <p class="caption mt-2">甜甜圈 + 熱力格 + 分佈條 + 洞察卡</p>
             </section>
 
             <!-- ============== Night Prompt ============== -->
@@ -838,16 +1421,19 @@
                     <div
                         class="safe bg-gradient-to-b from-[#0E1726] to-[#1b2a49] text-white"
                     >
-                        <div class="px-6 pt-10 text-center">
+                        <div class="px-6 pt-9 text-center">
+                            <div class="text-xs text-white/60">
+                                Streak: <span class="font-semibold">7</span> 🔥
+                            </div>
                             <div class="text-6xl">🌙</div>
-                            <h1 class="text-2xl font-bold mt-3">
+                            <h1 class="text-2xl font-bold mt-2">
                                 今天過得如何？
                             </h1>
                             <p class="text-white/70 mt-1">
                                 花 10 秒寫下一句話就好
                             </p>
                         </div>
-                        <div class="px-6 mt-6">
+                        <div class="px-6 mt-5">
                             <div class="flex justify-center gap-4">
                                 <button
                                     class="w-12 h-12 rounded-2xl bg-rose-200/10 border border-white/20"
@@ -870,6 +1456,10 @@
                                 class="mt-5 w-full bg-white/10 text-white rounded-2xl px-3 py-3 placeholder-white/50 outline-none ring-1 ring-white/20 focus:ring-white/40"
                                 placeholder="寫下一句今天的記憶點…"
                             ></textarea>
+                            <div class="mt-3 text-sm text-white/60">
+                                建議：今天完成 3 個任務，不錯！明天早睡 30
+                                分鐘吧。
+                            </div>
                             <div class="mt-4 grid grid-cols-2 gap-3">
                                 <button
                                     class="py-3 rounded-2xl bg-white/15 font-semibold hover:bg-white/25"
@@ -885,7 +1475,7 @@
                         </div>
                     </div>
                 </div>
-                <p class="caption mt-2">22:00 喚起；三個情緒鍵＋一句話輸入</p>
+                <p class="caption mt-2">夜間模式 + Streak 指標 + 情緒三鍵</p>
             </section>
 
             <!-- ============== Settings ============== -->
@@ -899,79 +1489,29 @@
                         <header class="px-6 pt-3">
                             <h1 class="text-2xl font-bold">設定</h1>
                         </header>
-                        <main class="px-6 mt-4 space-y-5 pb-20">
-                            <!-- Group 1 -->
-                            <div class="bg-gray-50 rounded-2xl p-3">
+                        <main class="px-6 mt-4 space-y-5 pb-24">
+                            <!-- Profile -->
+                            <div
+                                class="bg-gray-50 rounded-2xl p-3 flex items-center gap-3"
+                            >
                                 <div
-                                    class="px-2 py-2 flex justify-between items-center"
+                                    class="w-12 h-12 rounded-full bg-indigo-200 grid place-items-center text-indigo-800 font-bold"
                                 >
-                                    <div>
-                                        <div class="font-medium">提醒時間</div>
-                                        <div class="text-sm text-gray-500">
-                                            晚安提示
-                                        </div>
-                                    </div>
-                                    <input
-                                        type="time"
-                                        value="22:00"
-                                        class="border rounded-xl px-3 py-1 ring-focus"
-                                    />
+                                    G
                                 </div>
-                                <div
-                                    class="px-2 py-2 flex justify-between items-center"
-                                >
-                                    <div>
-                                        <div class="font-medium">主題</div>
-                                        <div class="text-sm text-gray-500">
-                                            淺色 / 深色 / 自動
-                                        </div>
+                                <div class="flex-1">
+                                    <div class="font-semibold">Goat</div>
+                                    <div class="text-xs text-gray-500">
+                                        登入：Apple ID
                                     </div>
-                                    <select
-                                        class="border rounded-xl px-3 py-1 ring-focus"
-                                    >
-                                        <option>自動</option>
-                                        <option>淺色</option>
-                                        <option>深色</option>
-                                    </select>
                                 </div>
+                                <button class="chip">管理</button>
                             </div>
-                            <!-- Group 2 -->
+
+                            <!-- usage -->
                             <div class="bg-gray-50 rounded-2xl p-3">
-                                <div
-                                    class="px-2 py-2 flex justify-between items-center"
-                                >
-                                    <div>
-                                        <div class="font-medium">
-                                            行事曆整合
-                                        </div>
-                                        <div class="text-sm text-gray-500">
-                                            讀寫 Apple Calendar
-                                        </div>
-                                    </div>
-                                    <label
-                                        class="inline-flex items-center cursor-pointer"
-                                    >
-                                        <input
-                                            type="checkbox"
-                                            class="sr-only peer"
-                                            checked
-                                        />
-                                        <div
-                                            class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-emerald-500 relative after:content-[''] after:w-5 after:h-5 after:bg-white after:rounded-full after:absolute after:top-0.5 after:left-0.5 peer-checked:after:translate-x-5 after:transition"
-                                        ></div>
-                                    </label>
-                                </div>
-                                <div
-                                    class="px-2 py-2 flex justify-between items-center"
-                                >
-                                    <div>
-                                        <div class="font-medium">
-                                            iCloud 同步
-                                        </div>
-                                        <div class="text-sm text-gray-500">
-                                            跨裝置備份
-                                        </div>
-                                    </div>
+                                <div class="flex justify-between items-center">
+                                    <div class="font-medium">iCloud 同步</div>
                                     <label
                                         class="inline-flex items-center cursor-pointer"
                                     >
@@ -985,16 +1525,30 @@
                                         ></div>
                                     </label>
                                 </div>
+                                <div class="mt-3 text-xs text-gray-500">
+                                    儲存用量
+                                </div>
+                                <div
+                                    class="w-full h-2 rounded bg-gray-200 overflow-hidden mt-1"
+                                >
+                                    <div class="h-2 bg-indigo-400 w-1/3"></div>
+                                </div>
+                                <div class="text-xs text-gray-500 mt-1">
+                                    使用 0.9 GB / 3 GB
+                                </div>
                             </div>
-                            <!-- Group 3 -->
-                            <div class="bg-gray-50 rounded-2xl p-3">
+
+                            <!-- privacy / export -->
+                            <div class="bg-gray-50 rounded-2xl p-3 space-y-2">
                                 <div
                                     class="px-2 py-2 flex justify-between items-center"
                                 >
                                     <div>
-                                        <div class="font-medium">隱私</div>
+                                        <div class="font-medium">
+                                            Face ID 鎖定
+                                        </div>
                                         <div class="text-sm text-gray-500">
-                                            以 Face ID 鎖定 App
+                                            開啟後進入需驗證
                                         </div>
                                     </div>
                                     <label
@@ -1009,19 +1563,70 @@
                                         ></div>
                                     </label>
                                 </div>
+                                <div
+                                    class="px-2 py-2 flex justify-between items-center"
+                                >
+                                    <div>
+                                        <div class="font-medium">資料匯出</div>
+                                        <div class="text-sm text-gray-500">
+                                            CSV / JSON
+                                        </div>
+                                    </div>
+                                    <button class="chip">匯出</button>
+                                </div>
+                                <div
+                                    class="px-2 py-2 flex justify-between items-center"
+                                >
+                                    <div>
+                                        <div class="font-medium">重設</div>
+                                        <div class="text-sm text-gray-500">
+                                            清除所有本機資料
+                                        </div>
+                                    </div>
+                                    <button
+                                        class="px-3 py-1 rounded-xl bg-red-50 text-red-600 font-semibold"
+                                    >
+                                        清除
+                                    </button>
+                                </div>
                             </div>
+
+                            <!-- labs -->
+                            <div class="bg-gray-50 rounded-2xl p-3">
+                                <div class="font-medium">Labs</div>
+                                <div
+                                    class="mt-2 flex items-center justify-between px-2 py-2"
+                                >
+                                    <div class="text-sm text-gray-700">
+                                        自動洞察（Beta）
+                                    </div>
+                                    <label
+                                        class="inline-flex items-center cursor-pointer"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            class="sr-only peer"
+                                            checked
+                                        />
+                                        <div
+                                            class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-emerald-500 relative after:content-[''] after:w-5 after:h-5 after:bg-white after:rounded-full after:absolute after:top-0.5 after:left-0.5 peer-checked:after:translate-x-5 after:transition"
+                                        ></div>
+                                    </label>
+                                </div>
+                            </div>
+
                             <div class="text-sm text-gray-400 px-2">
-                                版本 1.0.0 · 回饋意見
+                                版本 1.0.0 · 意見回饋
                             </div>
                         </main>
                     </div>
                 </div>
-                <p class="caption mt-2">群組化設定，對齊 iOS 分組表單樣式</p>
+                <p class="caption mt-2">加入個人卡 / 用量 / 匯出 / Labs</p>
             </section>
         </main>
 
         <footer class="text-center text-gray-400 text-sm mb-10">
-            © 2025 LifeHack — Prototype for iOS · Apple HIG-style Overview
+            © 2025 LifeHack — Revised Layout · Apple HIG-style Overview
         </footer>
     </body>
 </html>
