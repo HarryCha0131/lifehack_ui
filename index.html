@@ -31,6 +31,43 @@
                 background: var(--site-bg);
                 transition: background-color 0.25s ease;
             }
+            html {
+                scroll-behavior: smooth;
+            }
+            main > section {
+                scroll-margin-top: 96px;
+            }
+            /* links inside phones should not look like default links */
+            a {
+                text-decoration: none;
+                color: inherit;
+            }
+            /* target pulse glow on the phone frame */
+            @keyframes lh-target-pulse {
+                0% {
+                    opacity: 0;
+                    box-shadow: 0 0 0 0 rgba(107, 142, 232, 0);
+                }
+                40% {
+                    opacity: 1;
+                    box-shadow: 0 0 0 12px rgba(107, 142, 232, 0.18);
+                }
+                100% {
+                    opacity: 0;
+                    box-shadow: 0 0 0 26px rgba(107, 142, 232, 0);
+                }
+            }
+            section .phone::after {
+                content: "";
+                position: absolute;
+                inset: -8px;
+                border-radius: 44px;
+                pointer-events: none;
+                opacity: 0;
+            }
+            section:target .phone::after {
+                animation: lh-target-pulse 1.1s ease-out 1;
+            }
             .phone {
                 width: 330px;
                 height: 700px;
@@ -167,6 +204,48 @@
             .kbd {
                 @apply text-xs px-2 py-1 rounded-lg bg-gray-50 border;
             }
+            /* ===== Smooth scroll & jump highlight ===== */
+            html {
+                scroll-behavior: smooth;
+            }
+
+            /* 目標段落的 iPhone 外框進場動效 */
+            section:target .phone {
+                animation: phone-pop 0.5s ease;
+            }
+            @keyframes phone-pop {
+                0% {
+                    transform: translateY(12px) scale(0.98);
+                    opacity: 0.85;
+                }
+                100% {
+                    transform: translateY(0) scale(1);
+                    opacity: 1;
+                }
+            }
+
+            /* 導覽 chip 的高亮（由 JS 切換 .active） */
+            header nav .chip.active {
+                outline: 2px solid rgba(107, 78, 0, 0.35);
+                box-shadow: 0 6px 16px rgba(107, 78, 0, 0.18);
+            }
+
+            /* 手機內 Demo 跳轉用的輕量連結樣式（不影響配色） */
+            .demo-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                font-weight: 600;
+                font-size: 12px;
+                padding: 6px 10px;
+                border-radius: 999px;
+                background: #f3f4f6;
+                color: #374151;
+                border: 1px solid #e5e7eb;
+            }
+            .demo-link i {
+                opacity: 0.7;
+            }
         </style>
     </head>
     <body class="text-gray-800 antialiased selection:bg-indigo-200/40">
@@ -180,16 +259,31 @@
                 All-in-one Lifestyle Journal · Finance × Mood × Schedule × Diary
             </p>
             <nav class="mt-6 flex flex-wrap justify-center gap-3 text-sm">
+                <!-- Core -->
                 <a href="#onboarding" class="chip">Onboarding</a>
+                <a href="#calendar" class="chip">Calendar</a>
+                <a href="#day-hub" class="chip">Day Hub</a>
                 <a href="#home" class="chip">Home</a>
                 <a href="#add" class="chip">Add Panel</a>
+                <!-- Editors -->
                 <a href="#exp-editor" class="chip">Expense</a>
                 <a href="#mood-editor" class="chip">Mood</a>
                 <a href="#event-editor" class="chip">Event</a>
                 <a href="#note-editor" class="chip">Note</a>
+                <a href="#entry-detail" class="chip">Entry Detail</a>
+                <!-- Analysis & Tools -->
                 <a href="#stats" class="chip">Stats</a>
+                <a href="#budget" class="chip">Budget</a>
+                <a href="#insights" class="chip">Insights</a>
+                <a href="#lab" class="chip">Lab</a>
+                <a href="#search" class="chip">Search</a>
+                <a href="#templates" class="chip">Templates</a>
+                <a href="#nudges" class="chip">Nudges</a>
+                <!-- System -->
                 <a href="#prompt" class="chip">Night Prompt</a>
                 <a href="#settings" class="chip">Settings</a>
+                <a href="#data-hub" class="chip">Data Hub</a>
+                <a href="#streaks" class="chip">Streaks</a>
             </nav>
         </header>
 
@@ -272,14 +366,21 @@
 
                         <div class="absolute left-0 right-0 bottom-24 px-6">
                             <div class="seg w-full justify-between">
-                                <button class="active w-1/2">快速新增</button>
-                                <button class="w-1/2">週報洞察</button>
+                                <a
+                                    href="#add"
+                                    class="active w-1/2 text-center block"
+                                    >快速新增</a
+                                >
+                                <a href="#stats" class="w-1/2 text-center block"
+                                    >週報洞察</a
+                                >
                             </div>
-                            <button
-                                class="mt-3 w-full py-3 rounded-2xl bg-[color:var(--primary)] text-white font-semibold shadow-lg hover:bg-[#5b7ddc] ring-focus"
+                            <a
+                                href="#home"
+                                class="mt-3 w-full py-3 rounded-2xl bg-[color:var(--primary)] text-white font-semibold shadow-lg hover:bg-[#5b7ddc] ring-focus block text-center"
                             >
                                 開始使用
-                            </button>
+                            </a>
                         </div>
 
                         <div
@@ -320,9 +421,11 @@
                                         今日時間軸
                                     </h1>
                                 </div>
-                                <i
-                                    class="fa-solid fa-gear text-gray-400 text-xl"
-                                ></i>
+                                <a href="#settings" aria-label="前往設定">
+                                    <i
+                                        class="fa-solid fa-gear text-gray-400 text-xl"
+                                    ></i>
+                                </a>
                             </div>
 
                             <!-- 週曆條 -->
@@ -376,120 +479,138 @@
 
                             <!-- 今日 KPI -->
                             <div class="grid grid-cols-3 gap-3">
-                                <div
-                                    class="bg-white rounded-2xl p-3 shadow-sm text-center"
-                                >
-                                    <div class="text-xs text-gray-500">
-                                        支出
-                                    </div>
+                                <a href="#stats" class="block group">
                                     <div
-                                        class="text-lg font-bold text-indigo-600"
+                                        class="bg-white rounded-2xl p-3 shadow-sm text-center group-hover:ring-1 group-hover:ring-indigo-200"
                                     >
-                                        NT$ 120
+                                        <div class="text-xs text-gray-500">
+                                            支出
+                                        </div>
+                                        <div
+                                            class="text-lg font-bold text-indigo-600"
+                                        >
+                                            NT$ 120
+                                        </div>
                                     </div>
-                                </div>
-                                <div
-                                    class="bg-white rounded-2xl p-3 shadow-sm text-center"
-                                >
-                                    <div class="text-xs text-gray-500">
-                                        心情
-                                    </div>
+                                </a>
+                                <a href="#stats" class="block group">
                                     <div
-                                        class="text-lg font-bold text-amber-600"
+                                        class="bg-white rounded-2xl p-3 shadow-sm text-center group-hover:ring-1 group-hover:ring-indigo-200"
                                     >
-                                        🙂 3.8
+                                        <div class="text-xs text-gray-500">
+                                            心情
+                                        </div>
+                                        <div
+                                            class="text-lg font-bold text-amber-600"
+                                        >
+                                            🙂 3.8
+                                        </div>
                                     </div>
-                                </div>
-                                <div
-                                    class="bg-white rounded-2xl p-3 shadow-sm text-center"
-                                >
-                                    <div class="text-xs text-gray-500">
-                                        事件
-                                    </div>
+                                </a>
+                                <a href="#stats" class="block group">
                                     <div
-                                        class="text-lg font-bold text-emerald-600"
+                                        class="bg-white rounded-2xl p-3 shadow-sm text-center group-hover:ring-1 group-hover:ring-indigo-200"
                                     >
-                                        3
+                                        <div class="text-xs text-gray-500">
+                                            事件
+                                        </div>
+                                        <div
+                                            class="text-lg font-bold text-emerald-600"
+                                        >
+                                            3
+                                        </div>
                                     </div>
-                                </div>
+                                </a>
                             </div>
                         </header>
 
                         <!-- Timeline -->
                         <main class="px-6 mt-4 space-y-3 pb-24">
                             <div class="text-xs text-gray-400">上午</div>
-                            <article
-                                class="bg-white rounded-2xl p-4 shadow-sm flex justify-between items-center"
-                            >
-                                <div class="flex items-center gap-3">
-                                    <div
-                                        class="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-600 grid place-items-center"
-                                    >
-                                        <i class="fa-solid fa-sack-dollar"></i>
-                                    </div>
-                                    <div>
-                                        <div class="font-semibold">
-                                            早餐咖啡
-                                        </div>
-                                        <div class="text-gray-500 text-sm">
-                                            NT$55 · 08:40
-                                        </div>
-                                    </div>
-                                </div>
-                                <span
-                                    class="text-indigo-600 text-sm font-semibold"
-                                    >支出</span
+                            <a href="#exp-editor" class="block group">
+                                <article
+                                    class="bg-white rounded-2xl p-4 shadow-sm flex justify-between items-center group-hover:ring-1 group-hover:ring-indigo-200"
                                 >
-                            </article>
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-600 grid place-items-center"
+                                        >
+                                            <i
+                                                class="fa-solid fa-sack-dollar"
+                                            ></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold">
+                                                早餐咖啡
+                                            </div>
+                                            <div class="text-gray-500 text-sm">
+                                                NT$55 · 08:40
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span
+                                        class="text-indigo-600 text-sm font-semibold"
+                                        >支出</span
+                                    >
+                                </article>
+                            </a>
 
                             <div class="text-xs text-gray-400 pt-2">下午</div>
-                            <article
-                                class="bg-white rounded-2xl p-4 shadow-sm flex justify-between items-center"
-                            >
-                                <div class="flex items-center gap-3">
-                                    <div
-                                        class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-600 grid place-items-center"
-                                    >
-                                        <i class="fa-regular fa-face-smile"></i>
-                                    </div>
-                                    <div>
-                                        <div class="font-semibold">
-                                            午後心情平靜
-                                        </div>
-                                        <div class="text-gray-500 text-sm">
-                                            15:00
-                                        </div>
-                                    </div>
-                                </div>
-                                <span
-                                    class="text-amber-600 text-sm font-semibold"
-                                    >心情</span
+                            <a href="#mood-editor" class="block group">
+                                <article
+                                    class="bg-white rounded-2xl p-4 shadow-sm flex justify-between items-center group-hover:ring-1 group-hover:ring-amber-200"
                                 >
-                            </article>
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-600 grid place-items-center"
+                                        >
+                                            <i
+                                                class="fa-regular fa-face-smile"
+                                            ></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold">
+                                                午後心情平靜
+                                            </div>
+                                            <div class="text-gray-500 text-sm">
+                                                15:00
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span
+                                        class="text-amber-600 text-sm font-semibold"
+                                        >心情</span
+                                    >
+                                </article>
+                            </a>
 
-                            <article
-                                class="bg-white rounded-2xl p-4 shadow-sm flex justify-between items-center"
-                            >
-                                <div class="flex items-center gap-3">
-                                    <div
-                                        class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-600 grid place-items-center"
-                                    >
-                                        <i class="fa-solid fa-calendar-day"></i>
-                                    </div>
-                                    <div>
-                                        <div class="font-semibold">
-                                            系會會議
-                                        </div>
-                                        <div class="text-gray-500 text-sm">
-                                            19:00 · E402
-                                        </div>
-                                    </div>
-                                </div>
-                                <span
-                                    class="text-emerald-600 text-sm font-semibold"
-                                    >行程</span
+                            <a href="#event-editor" class="block group">
+                                <article
+                                    class="bg-white rounded-2xl p-4 shadow-sm flex justify-between items-center group-hover:ring-1 group-hover:ring-emerald-200"
                                 >
-                            </article>
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-600 grid place-items-center"
+                                        >
+                                            <i
+                                                class="fa-solid fa-calendar-day"
+                                            ></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold">
+                                                系會會議
+                                            </div>
+                                            <div class="text-gray-500 text-sm">
+                                                19:00 · E402
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span
+                                        class="text-emerald-600 text-sm font-semibold"
+                                        >行程</span
+                                    >
+                                </article>
+                            </a>
 
                             <!-- 洞察 toast -->
                             <div
@@ -505,11 +626,12 @@
                             </div>
                         </main>
 
-                        <button
-                            class="absolute right-6 bottom-20 w-16 h-16 rounded-full bg-[color:var(--primary)] text-white text-3xl shadow-lg hover:bg-[#5b7ddc]"
+                        <a
+                            href="#add"
+                            class="absolute right-6 bottom-20 w-16 h-16 rounded-full bg-[color:var(--primary)] text-white text-3xl shadow-lg hover:bg-[#5b7ddc] grid place-items-center"
                         >
                             +
-                        </button>
+                        </a>
 
                         <nav
                             class="tabbar grid grid-cols-5 text-xs text-gray-500 place-items-center"
@@ -562,36 +684,40 @@
                         </header>
                         <main class="px-6 mt-5">
                             <div class="grid grid-cols-4 gap-3">
-                                <button
+                                <a
+                                    href="#exp-editor"
                                     class="h-28 rounded-2xl bg-indigo-50 text-indigo-600 font-semibold shadow-sm hover:shadow flex flex-col items-center justify-center"
                                 >
                                     <i
                                         class="fa-solid fa-sack-dollar text-2xl mb-1"
                                     ></i
                                     >支出
-                                </button>
-                                <button
+                                </a>
+                                <a
+                                    href="#mood-editor"
                                     class="h-28 rounded-2xl bg-amber-50 text-amber-600 font-semibold shadow-sm hover:shadow flex flex-col items-center justify-center"
                                 >
                                     <i
                                         class="fa-regular fa-face-smile text-2xl mb-1"
                                     ></i
                                     >心情
-                                </button>
-                                <button
+                                </a>
+                                <a
+                                    href="#event-editor"
                                     class="h-28 rounded-2xl bg-emerald-50 text-emerald-600 font-semibold shadow-sm hover:shadow flex flex-col items-center justify-center"
                                 >
                                     <i
                                         class="fa-solid fa-calendar-day text-2xl mb-1"
                                     ></i
                                     >行程
-                                </button>
-                                <button
+                                </a>
+                                <a
+                                    href="#note-editor"
                                     class="h-28 rounded-2xl bg-gray-50 text-gray-700 font-semibold shadow-sm hover:shadow flex flex-col items-center justify-center"
                                 >
                                     <i class="fa-solid fa-pen text-2xl mb-1"></i
                                     >日記
-                                </button>
+                                </a>
                             </div>
 
                             <h4 class="mt-6 text-sm text-gray-500">模板</h4>
@@ -640,15 +766,15 @@
                         <header
                             class="px-6 pt-3 flex justify-between items-center"
                         >
-                            <button class="text-[color:var(--primary)]">
+                            <a href="#home" class="text-[color:var(--primary)]">
                                 <i class="fa-solid fa-chevron-left"></i>
-                            </button>
+                            </a>
                             <h1 class="text-lg font-semibold">新增支出</h1>
-                            <button
+                            <a
+                                href="#home"
                                 class="text-[color:var(--primary)] font-semibold"
+                                >儲存</a
                             >
-                                儲存
-                            </button>
                         </header>
 
                         <main class="px-6 mt-3 space-y-4 pb-24">
@@ -791,15 +917,15 @@
                         <header
                             class="px-6 pt-3 flex justify-between items-center"
                         >
-                            <button class="text-[color:var(--primary)]">
+                            <a href="#home" class="text-[color:var(--primary)]">
                                 <i class="fa-solid fa-chevron-left"></i>
-                            </button>
+                            </a>
                             <h1 class="text-lg font-semibold">記錄心情</h1>
-                            <button
+                            <a
+                                href="#home"
                                 class="text-[color:var(--primary)] font-semibold"
+                                >儲存</a
                             >
-                                儲存
-                            </button>
                         </header>
                         <main class="px-6 mt-4 space-y-5">
                             <!-- 情緒滑桿 -->
@@ -893,15 +1019,15 @@
                         <header
                             class="px-6 pt-3 flex justify-between items-center"
                         >
-                            <button class="text-[color:var(--primary)]">
+                            <a href="#home" class="text-[color:var(--primary)]">
                                 <i class="fa-solid fa-chevron-left"></i>
-                            </button>
+                            </a>
                             <h1 class="text-lg font-semibold">新增行程</h1>
-                            <button
+                            <a
+                                href="#home"
                                 class="text-[color:var(--primary)] font-semibold"
+                                >儲存</a
                             >
-                                儲存
-                            </button>
                         </header>
                         <main class="px-6 mt-3 space-y-4">
                             <!-- 週曆條 -->
@@ -1046,15 +1172,15 @@
                         <header
                             class="px-6 pt-3 flex justify-between items-center"
                         >
-                            <button class="text-[color:var(--primary)]">
+                            <a href="#home" class="text-[color:var(--primary)]">
                                 <i class="fa-solid fa-chevron-left"></i>
-                            </button>
+                            </a>
                             <h1 class="text-lg font-semibold">寫日記</h1>
-                            <button
+                            <a
+                                href="#home"
                                 class="text-[color:var(--primary)] font-semibold"
+                                >儲存</a
                             >
-                                儲存
-                            </button>
                         </header>
                         <main class="px-6 mt-3 space-y-4 pb-24">
                             <!-- 工具列 -->
@@ -1400,10 +1526,16 @@
                             </div>
 
                             <!-- 洞察 -->
-                            <div class="glass rounded-2xl px-4 py-3 text-sm">
+                            <a
+                                href="#home"
+                                class="block glass rounded-2xl px-4 py-3 text-sm hover:ring-1 hover:ring-emerald-200"
+                            >
                                 🌿
-                                洞察：週三行程最多且支出偏高；嘗試把健身移到週四，平均化壓力並降低外食。
-                            </div>
+                                洞察：週三行程最多且支出偏高；嘗試把健身移到週四，平均化壓力並降低外食。<span
+                                    class="ml-1 text-emerald-700"
+                                    >→ 回到首頁調整</span
+                                >
+                            </a>
                         </main>
                         <div class="tabbar"></div>
                     </div>
@@ -1466,11 +1598,12 @@
                                 >
                                     稍後提醒
                                 </button>
-                                <button
-                                    class="py-3 rounded-2xl bg-white text-[#0E1726] font-semibold"
+                                <a
+                                    href="#home"
+                                    class="py-3 rounded-2xl bg-white text-[#0E1726] font-semibold block text-center"
                                 >
                                     儲存
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -1623,10 +1756,705 @@
                 </div>
                 <p class="caption mt-2">加入個人卡 / 用量 / 匯出 / Labs</p>
             </section>
+            <!-- ============== Calendar (Month) ============== -->
+            <section id="calendar" class="w-full flex flex-col items-center">
+                <h2 class="text-lg font-semibold text-[color:var(--ink)] mb-3">
+                    Calendar / 月檢視
+                </h2>
+                <div class="phone">
+                    <div class="island"></div>
+                    <div class="safe bg-white">
+                        <header
+                            class="px-6 pt-3 flex items-center justify-between"
+                        >
+                            <h1 class="text-2xl font-bold">10 月</h1>
+                            <div class="seg">
+                                <button class="active">月</button
+                                ><button>週</button>
+                            </div>
+                        </header>
+                        <main class="px-4 mt-3">
+                            <div
+                                class="grid grid-cols-7 text-center text-xs text-gray-500"
+                            >
+                                <div>一</div>
+                                <div>二</div>
+                                <div>三</div>
+                                <div>四</div>
+                                <div>五</div>
+                                <div>六</div>
+                                <div>日</div>
+                            </div>
+                            <div
+                                class="mt-2 grid grid-cols-7 gap-1 text-center"
+                            >
+                                <div class="py-3"></div>
+                                <div class="py-3"></div>
+                                <div class="py-3">1</div>
+                                <div class="py-3">2</div>
+                                <div class="py-3">3</div>
+                                <div class="py-3">4</div>
+                                <div class="py-3">5</div>
+                                <div class="py-3 rounded-xl bg-gray-50">
+                                    6
+                                    <div class="flex gap-1 justify-center mt-1">
+                                        <span
+                                            class="w-1.5 h-1.5 rounded-full bg-[#6B8EE8]"
+                                        ></span>
+                                        <span
+                                            class="w-1.5 h-1.5 rounded-full bg-[#f59e0b]"
+                                        ></span>
+                                        <span
+                                            class="w-1.5 h-1.5 rounded-full bg-[#10b981]"
+                                        ></span>
+                                    </div>
+                                </div>
+                                <div class="py-3">7</div>
+                                <div class="py-3">8</div>
+                                <div class="py-3 rounded-xl bg-gray-50">
+                                    9
+                                    <div class="flex gap-1 justify-center mt-1">
+                                        <span
+                                            class="w-1.5 h-1.5 rounded-full bg-[#6B8EE8]"
+                                        ></span>
+                                        <span
+                                            class="w-1.5 h-1.5 rounded-full bg-[#f59e0b]"
+                                        ></span>
+                                    </div>
+                                </div>
+                                <div class="py-3">10</div>
+                                <div class="py-3">11</div>
+                                <div class="py-3">12</div>
+                            </div>
+                            <div class="mt-4 flex justify-center">
+                                <a href="#day-hub" class="demo-link"
+                                    ><i class="fa-solid fa-arrow-right"></i>
+                                    查看 10/09 單日總覽</a
+                                >
+                            </div>
+                        </main>
+                        <div class="tabbar"></div>
+                    </div>
+                </div>
+                <p class="caption mt-2">
+                    三色點：行程/心情/支出；點日 → Day Hub
+                </p>
+            </section>
+
+            <!-- ============== Day Hub ============== -->
+            <section id="day-hub" class="w-full flex flex-col items-center">
+                <h2 class="text-lg font-semibold text-[color:var(--ink)] mb-3">
+                    Day Hub / 單日訊總覽
+                </h2>
+                <div class="phone">
+                    <div class="island"></div>
+                    <div class="safe bg-[#FFFDF7]">
+                        <header
+                            class="px-6 pt-3 flex items-center justify-between"
+                        >
+                            <div>
+                                <div class="text-xs text-gray-500">週三</div>
+                                <h1 class="text-2xl font-bold">10/09</h1>
+                            </div>
+                            <a href="#calendar" class="demo-link"
+                                ><i class="fa-solid fa-calendar"></i>
+                                回月檢視</a
+                            >
+                        </header>
+                        <main class="px-6 mt-3 space-y-3 pb-24">
+                            <div class="grid grid-cols-3 gap-3">
+                                <div
+                                    class="bg-white rounded-2xl p-3 text-center shadow-sm"
+                                >
+                                    <div class="text-xs text-gray-500">
+                                        支出
+                                    </div>
+                                    <div
+                                        class="text-lg font-bold text-indigo-600"
+                                    >
+                                        NT$ 285
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-white rounded-2xl p-3 text-center shadow-sm"
+                                >
+                                    <div class="text-xs text-gray-500">
+                                        平均心情
+                                    </div>
+                                    <div
+                                        class="text-lg font-bold text-amber-600"
+                                    >
+                                        3.6
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-white rounded-2xl p-3 text-center shadow-sm"
+                                >
+                                    <div class="text-xs text-gray-500">
+                                        事件
+                                    </div>
+                                    <div
+                                        class="text-lg font-bold text-emerald-600"
+                                    >
+                                        4
+                                    </div>
+                                </div>
+                            </div>
+                            <article class="bg-white rounded-2xl p-4 shadow-sm">
+                                <div class="font-semibold mb-1">支出列表</div>
+                                <div
+                                    class="flex items-center justify-between py-2 border-b"
+                                >
+                                    <div class="text-sm">早餐咖啡</div>
+                                    <div class="text-indigo-600 text-sm">
+                                        NT$55
+                                    </div>
+                                </div>
+                                <div
+                                    class="flex items-center justify-between py-2"
+                                >
+                                    <div class="text-sm">晚餐外食</div>
+                                    <div class="text-indigo-600 text-sm">
+                                        NT$120
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <a href="#entry-detail" class="demo-link"
+                                        ><i class="fa-solid fa-receipt"></i>
+                                        看某筆詳情</a
+                                    >
+                                </div>
+                            </article>
+                            <article class="bg-white rounded-2xl p-4 shadow-sm">
+                                <div class="font-semibold mb-1">心情與日記</div>
+                                <div class="text-sm text-gray-600">
+                                    🙂 平穩 · 「今天專心把作業做完」
+                                </div>
+                            </article>
+                            <article class="bg-white rounded-2xl p-4 shadow-sm">
+                                <div class="font-semibold mb-1">事件清單</div>
+                                <div class="text-sm text-gray-600">
+                                    19:00 系會會議（E402）
+                                </div>
+                            </article>
+                        </main>
+                        <div class="tabbar"></div>
+                    </div>
+                </div>
+                <p class="caption mt-2">KPI + 支出/心情/事件集中呈現</p>
+            </section>
+
+            <!-- ============== Entry Detail ============== -->
+            <section
+                id="entry-detail"
+                class="w-full flex flex-col items-center"
+            >
+                <h2 class="text-lg font-semibold text-[color:var(--ink)] mb-3">
+                    Entry Detail / 事件詳情
+                </h2>
+                <div class="phone">
+                    <div class="island"></div>
+                    <div class="safe bg-white">
+                        <header
+                            class="px-6 pt-3 flex items-center justify-between"
+                        >
+                            <h1 class="text-2xl font-bold">早餐咖啡</h1>
+                            <a href="#day-hub" class="demo-link"
+                                ><i class="fa-solid fa-arrow-left"></i> 回
+                                Day</a
+                            >
+                        </header>
+                        <main class="px-6 mt-3 space-y-3 pb-24">
+                            <div class="bg-indigo-50 rounded-2xl p-4">
+                                <div class="text-xs text-indigo-700">金額</div>
+                                <div
+                                    class="text-4xl font-extrabold tracking-tight text-[color:var(--ink)]"
+                                >
+                                    NT$ 55
+                                </div>
+                                <div class="mt-2 text-sm text-gray-600">
+                                    類別：餐飲 · 時間：08:40 · 地點：學校門口
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-2xl p-4 shadow-sm">
+                                <div class="font-semibold mb-2">關聯</div>
+                                <div class="text-sm text-gray-600">
+                                    同日心情：🙂 3.6 · 事件：09:10 上課
+                                </div>
+                                <div class="mt-2 flex gap-2">
+                                    <a href="#budget" class="demo-link"
+                                        ><i class="fa-solid fa-piggy-bank"></i>
+                                        設預算</a
+                                    >
+                                    <a href="#insights" class="demo-link"
+                                        ><i class="fa-solid fa-lightbulb"></i>
+                                        看洞察</a
+                                    >
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+                </div>
+                <p class="caption mt-2">從單筆向「預算 / 洞察」串接</p>
+            </section>
+
+            <!-- ============== Quick Capture (optional entry) ============== -->
+            <section
+                id="quick-capture"
+                class="w-full flex flex-col items-center"
+            >
+                <h2 class="text-lg font-semibold text-[color:var(--ink)] mb-3">
+                    Quick Capture / 快速擷取
+                </h2>
+                <div class="phone">
+                    <div class="island"></div>
+                    <div class="safe bg-white">
+                        <header class="px-6 pt-3">
+                            <h1 class="text-2xl font-bold">快速擷取</h1>
+                        </header>
+                        <main class="px-6 mt-4 space-y-4">
+                            <div class="grid grid-cols-3 gap-3">
+                                <button
+                                    class="h-24 rounded-2xl bg-gray-50 font-semibold"
+                                >
+                                    相機 OCR
+                                </button>
+                                <button
+                                    class="h-24 rounded-2xl bg-gray-50 font-semibold"
+                                >
+                                    語音轉文字
+                                </button>
+                                <button
+                                    class="h-24 rounded-2xl bg-gray-50 font-semibold"
+                                >
+                                    文字
+                                </button>
+                            </div>
+                            <div class="bg-white rounded-2xl p-4 shadow-sm">
+                                <div class="font-semibold">最近模板</div>
+                                <div class="mt-2 flex gap-2">
+                                    <a href="#exp-editor" class="demo-link"
+                                        ><i class="fa-solid fa-plus"></i> 咖啡
+                                        55</a
+                                    >
+                                    <a href="#mood-editor" class="demo-link"
+                                        ><i class="fa-solid fa-plus"></i> 🙂
+                                        4/5</a
+                                    >
+                                </div>
+                            </div>
+                        </main>
+                        <div class="tabbar"></div>
+                    </div>
+                </div>
+                <p class="caption mt-2">3 秒入手：相機 / 語音 / 文字</p>
+            </section>
+
+            <!-- ============== Budget & Goals ============== -->
+            <section id="budget" class="w-full flex flex-col items-center">
+                <h2 class="text-lg font-semibold text-[color:var(--ink)] mb-3">
+                    Budget / 預算與目標
+                </h2>
+                <div class="phone">
+                    <div class="island"></div>
+                    <div class="safe bg-[#FDFBF4]">
+                        <header
+                            class="px-6 pt-3 flex items-center justify-between"
+                        >
+                            <h1 class="text-2xl font-bold">預算</h1>
+                            <a href="#insights" class="demo-link"
+                                ><i class="fa-solid fa-lightbulb"></i> 看建議</a
+                            >
+                        </header>
+                        <main class="px-6 mt-3 space-y-3 pb-24">
+                            <div class="grid grid-cols-3 gap-3">
+                                <div
+                                    class="bg-white rounded-2xl p-3 text-center shadow-sm kpi-shadow"
+                                >
+                                    <div class="text-xs text-gray-500">
+                                        本月剩餘
+                                    </div>
+                                    <div class="text-xl font-bold">
+                                        NT$ 4,120
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-white rounded-2xl p-3 text-center shadow-sm"
+                                >
+                                    <div class="text-xs text-gray-500">
+                                        餐飲上限
+                                    </div>
+                                    <div class="text-xl font-bold">
+                                        NT$ 2,500
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-white rounded-2xl p-3 text-center shadow-sm"
+                                >
+                                    <div class="text-xs text-gray-500">
+                                        週目標
+                                    </div>
+                                    <div class="text-xl font-bold">
+                                        外食 ≤ 3 次
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-2xl p-4 shadow-sm">
+                                <div class="font-medium mb-2">類別設定</div>
+                                <div class="grid grid-cols-2 gap-2 text-sm">
+                                    <div
+                                        class="flex justify-between p-2 rounded-xl bg-gray-50"
+                                    >
+                                        <span>餐飲</span><span>NT$ 2,500</span>
+                                    </div>
+                                    <div
+                                        class="flex justify-between p-2 rounded-xl bg-gray-50"
+                                    >
+                                        <span>交通</span><span>NT$ 800</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </main>
+                        <div class="tabbar"></div>
+                    </div>
+                </div>
+                <p class="caption mt-2">目標 + 類別上限，以行動為導向</p>
+            </section>
+
+            <!-- ============== Insights Feed ============== -->
+            <section id="insights" class="w-full flex flex-col items-center">
+                <h2 class="text-lg font-semibold text-[color:var(--ink)] mb-3">
+                    Insights / 洞察 Feed
+                </h2>
+                <div class="phone">
+                    <div class="island"></div>
+                    <div class="safe bg-white">
+                        <header
+                            class="px-6 pt-3 flex items-center justify-between"
+                        >
+                            <h1 class="text-2xl font-bold">洞察</h1>
+                            <a href="#lab" class="demo-link"
+                                ><i class="fa-solid fa-flask"></i> 去 Lab</a
+                            >
+                        </header>
+                        <main class="px-6 mt-3 space-y-3 pb-24">
+                            <div class="bg-white rounded-2xl p-4 shadow-sm">
+                                <div class="font-semibold">
+                                    週三外食 ↑ 與心情 ↓ 有關
+                                </div>
+                                <div class="text-sm text-gray-600 mt-1">
+                                    近 6 週資料：週三外食次數越高、心情分數偏低
+                                </div>
+                                <div class="mt-2 flex gap-2">
+                                    <a href="#budget" class="demo-link"
+                                        ><i class="fa-solid fa-piggy-bank"></i>
+                                        設餐飲上限</a
+                                    >
+                                    <a href="#nudges" class="demo-link"
+                                        ><i class="fa-solid fa-bell"></i>
+                                        加提醒</a
+                                    >
+                                </div>
+                            </div>
+                            <div class="glass rounded-2xl px-4 py-3 text-sm">
+                                🌿 建議：把健身移到週四，平均化壓力並降低外食。
+                            </div>
+                        </main>
+                        <div class="tabbar"></div>
+                    </div>
+                </div>
+                <p class="caption mt-2">每則洞察都能「一鍵化為動作」</p>
+            </section>
+
+            <!-- ============== Correlation Lab ============== -->
+            <section id="lab" class="w-full flex flex-col items-center">
+                <h2 class="text-lg font-semibold text-[color:var(--ink)] mb-3">
+                    Lab / 關聯分析
+                </h2>
+                <div class="phone">
+                    <div class="island"></div>
+                    <div class="safe bg-white">
+                        <header class="px-6 pt-3">
+                            <h1 class="text-2xl font-bold">關聯分析</h1>
+                        </header>
+                        <main class="px-6 mt-3 space-y-3 pb-24">
+                            <div class="bg-gray-50 rounded-2xl p-3">
+                                <div class="text-sm text-gray-600">
+                                    X：外食次數　Y：心情分數
+                                </div>
+                                <div
+                                    class="mt-2 rounded-xl border grid place-items-center h-28 text-gray-400"
+                                >
+                                    圖表示意
+                                </div>
+                                <div class="mt-2 flex gap-2">
+                                    <a href="#insights" class="demo-link"
+                                        ><i class="fa-solid fa-lightbulb"></i>
+                                        產生洞察</a
+                                    >
+                                    <a href="#data-hub" class="demo-link"
+                                        ><i class="fa-solid fa-file-export"></i>
+                                        匯出 CSV</a
+                                    >
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+                </div>
+                <p class="caption mt-2">變數對比、圖證、導向洞察/匯出</p>
+            </section>
+
+            <!-- ============== Search ============== -->
+            <section id="search" class="w-full flex flex-col items-center">
+                <h2 class="text-lg font-semibold text-[color:var(--ink)] mb-3">
+                    Search / 全域搜尋
+                </h2>
+                <div class="phone">
+                    <div class="island"></div>
+                    <div class="safe bg-white">
+                        <header class="px-6 pt-3">
+                            <h1 class="text-2xl font-bold">搜尋</h1>
+                        </header>
+                        <main class="px-6 mt-3 space-y-3 pb-24">
+                            <input
+                                class="w-full border rounded-2xl px-3 py-2"
+                                placeholder="咖啡 / 🙂 / NT$ 55 / E402…"
+                            />
+                            <div class="flex gap-2 overflow-x-auto">
+                                <span class="chip">餐飲</span
+                                ><span class="chip">3★ 以下</span
+                                ><span class="chip">本週</span>
+                            </div>
+                            <div class="bg-white rounded-2xl p-4 shadow-sm">
+                                <div class="text-sm text-gray-600">
+                                    結果 · 12 筆
+                                </div>
+                                <a
+                                    href="#entry-detail"
+                                    class="demo-link mt-2 inline-flex"
+                                    ><i class="fa-solid fa-arrow-right"></i>
+                                    看一筆詳情</a
+                                >
+                            </div>
+                        </main>
+                    </div>
+                </div>
+                <p class="caption mt-2">條件儲存、快速回用</p>
+            </section>
+
+            <!-- ============== Templates ============== -->
+            <section id="templates" class="w-full flex flex-col items-center">
+                <h2 class="text-lg font-semibold text-[color:var(--ink)] mb-3">
+                    Templates / 模板庫
+                </h2>
+                <div class="phone">
+                    <div class="island"></div>
+                    <div class="safe bg-white">
+                        <header class="px-6 pt-3">
+                            <h1 class="text-2xl font-bold">模板</h1>
+                        </header>
+                        <main class="px-6 mt-3">
+                            <div class="grid grid-cols-2 gap-3">
+                                <button
+                                    class="bg-white rounded-xl px-4 py-3 shadow-sm text-left"
+                                >
+                                    <div class="font-semibold">咖啡 NT$55</div>
+                                    <div class="text-xs text-gray-500">
+                                        餐飲 · 上午
+                                    </div>
+                                </button>
+                                <button
+                                    class="bg-white rounded-xl px-4 py-3 shadow-sm text-left"
+                                >
+                                    <div class="font-semibold">跑步 30 分</div>
+                                    <div class="text-xs text-gray-500">
+                                        運動 · 晚上
+                                    </div>
+                                </button>
+                            </div>
+                            <div class="mt-3">
+                                <a href="#add" class="demo-link"
+                                    ><i class="fa-solid fa-plus"></i>
+                                    加到新增面板</a
+                                >
+                            </div>
+                        </main>
+                    </div>
+                </div>
+                <p class="caption mt-2">常用動作一鍵帶入</p>
+            </section>
+
+            <!-- ============== Nudges ============== -->
+            <section id="nudges" class="w-full flex flex-col items-center">
+                <h2 class="text-lg font-semibold text-[color:var(--ink)] mb-3">
+                    Nudges / 通知中心
+                </h2>
+                <div class="phone">
+                    <div class="island"></div>
+                    <div class="safe bg-white">
+                        <header class="px-6 pt-3">
+                            <h1 class="text-2xl font-bold">提醒</h1>
+                        </header>
+                        <main class="px-6 mt-3 space-y-3 pb-24">
+                            <div
+                                class="bg-gray-50 rounded-2xl p-3 flex items-center justify-between"
+                            >
+                                <div>
+                                    <div class="font-medium">晚安摘要</div>
+                                    <div class="text-xs text-gray-500">
+                                        21:30 · 今日支出/心情/任務
+                                    </div>
+                                </div>
+                                <label
+                                    class="inline-flex items-center cursor-pointer"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        class="sr-only peer"
+                                        checked
+                                    />
+                                    <div
+                                        class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-indigo-500 relative after:content-[''] after:w-5 after:h-5 after:bg-white after:rounded-full after:absolute after:top-0.5 after:left-0.5 peer-checked:after:translate-x-5 after:transition"
+                                    ></div>
+                                </label>
+                            </div>
+                            <a href="#prompt" class="demo-link inline-flex"
+                                ><i class="fa-solid fa-moon"></i> 測試晚安頁</a
+                            >
+                        </main>
+                    </div>
+                </div>
+                <p class="caption mt-2">把提醒收編、可快速靜音</p>
+            </section>
+
+            <!-- ============== Data Hub ============== -->
+            <section id="data-hub" class="w-full flex flex-col items-center">
+                <h2 class="text-lg font-semibold text-[color:var(--ink)] mb-3">
+                    Data Hub / 資料中樞
+                </h2>
+                <div class="phone">
+                    <div class="island"></div>
+                    <div class="safe bg-white">
+                        <header class="px-6 pt-3">
+                            <h1 class="text-2xl font-bold">資料與同步</h1>
+                        </header>
+                        <main class="px-6 mt-3 space-y-3 pb-24">
+                            <div class="bg-gray-50 rounded-2xl p-3">
+                                <div class="font-medium">iCloud 同步</div>
+                                <div class="text-xs text-gray-500">
+                                    已開啟 · 使用 0.9 GB / 3 GB
+                                </div>
+                            </div>
+                            <div
+                                class="bg-gray-50 rounded-2xl p-3 flex justify-between items-center"
+                            >
+                                <div>
+                                    <div class="font-medium">匯出</div>
+                                    <div class="text-xs text-gray-500">
+                                        CSV / JSON
+                                    </div>
+                                </div>
+                                <a href="#lab" class="demo-link"
+                                    ><i class="fa-solid fa-file-export"></i>
+                                    匯出近 30 天</a
+                                >
+                            </div>
+                        </main>
+                    </div>
+                </div>
+                <p class="caption mt-2">同步/匯出/隱私集中管理</p>
+            </section>
+
+            <!-- ============== Streaks ============== -->
+            <section id="streaks" class="w-full flex flex-col items-center">
+                <h2 class="text-lg font-semibold text-[color:var(--ink)] mb-3">
+                    Streaks / 成就與連續
+                </h2>
+                <div class="phone">
+                    <div class="island"></div>
+                    <div class="safe bg-white">
+                        <header class="px-6 pt-3">
+                            <h1 class="text-2xl font-bold">成就</h1>
+                        </header>
+                        <main class="px-6 mt-3 space-y-3 pb-24">
+                            <div class="grid grid-cols-3 gap-3">
+                                <div
+                                    class="bg-gray-50 rounded-2xl p-3 text-center"
+                                >
+                                    <div class="text-xs text-gray-500">
+                                        記帳連續
+                                    </div>
+                                    <div class="text-xl font-bold">7 天</div>
+                                </div>
+                                <div
+                                    class="bg-gray-50 rounded-2xl p-3 text-center"
+                                >
+                                    <div class="text-xs text-gray-500">
+                                        心情打卡
+                                    </div>
+                                    <div class="text-xl font-bold">10 天</div>
+                                </div>
+                                <div
+                                    class="bg-gray-50 rounded-2xl p-3 text-center"
+                                >
+                                    <div class="text-xs text-gray-500">
+                                        日記連續
+                                    </div>
+                                    <div class="text-xl font-bold">5 天</div>
+                                </div>
+                            </div>
+                            <a href="#note-editor" class="demo-link inline-flex"
+                                ><i class="fa-solid fa-pen"></i> 寫今天的一句</a
+                            >
+                        </main>
+                    </div>
+                </div>
+                <p class="caption mt-2">把習慣視覺化、回饋更明確</p>
+            </section>
         </main>
 
         <footer class="text-center text-gray-400 text-sm mb-10">
             © 2025 LifeHack — Revised Layout · Apple HIG-style Overview
         </footer>
     </body>
+    <script>
+        // 導覽 chip 高亮：依視窗中最接近中央的 section
+        const sections = [...document.querySelectorAll("main > section[id]")];
+        const navLinks = [...document.querySelectorAll("header nav a.chip")];
+        const linkById = (id) =>
+            navLinks.find((a) => a.getAttribute("href") === "#" + id);
+
+        const io = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((e) => {
+                    if (e.isIntersecting) {
+                        navLinks.forEach((a) => a.classList.remove("active"));
+                        const link = linkById(e.target.id);
+                        if (link) link.classList.add("active");
+                    }
+                });
+            },
+            { rootMargin: "-40% 0px -50% 0px", threshold: 0.01 }
+        );
+
+        sections.forEach((s) => io.observe(s));
+
+        // Demo 內部跳轉：加小動畫（配合 CSS :target）
+        document.querySelectorAll("a.demo-link").forEach((a) => {
+            a.addEventListener("click", () => {
+                const id = a.getAttribute("href")?.replace("#", "");
+                if (!id) return;
+                setTimeout(() => {
+                    const tgt = document.getElementById(id);
+                    if (tgt) {
+                        tgt.classList.add("demo-jump");
+                        setTimeout(
+                            () => tgt.classList.remove("demo-jump"),
+                            600
+                        );
+                    }
+                }, 0);
+            });
+        });
+    </script>
 </html>
